@@ -1,10 +1,10 @@
 # [level unrated] 캐릭터의 좌표 - 120861 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120861#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120861) 
 
 ### 성능 요약
 
-메모리: 75.9 MB, 시간: 0.03 ms
+메모리: 83.8 MB, 시간: 4.29 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2023년 12월 4일 2:36:48
+2023년 12월 4일 2:40:22
 
 ### 문제 설명
 
