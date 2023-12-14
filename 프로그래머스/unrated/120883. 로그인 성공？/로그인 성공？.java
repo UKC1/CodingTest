@@ -3,9 +3,10 @@ class Solution {
         String answer = "fail";
         for (int i = 0; i < db.length; i++) {
             if (db[i][0].equals(id_pw[0])) {
-                answer = "wrong pw";
                 if (db[i][1].equals(id_pw[1])) {     
                     return "login";
+                } else {
+                    return "wrong pw";
                 }
             }
         }
