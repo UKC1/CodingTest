@@ -1,13 +1,12 @@
 class Solution {
     public long solution(long n) {
-        long answer = 0;
-        for (long i = 0; i <= Math.sqrt(n); i++) {
-            if (n == i * i) {
-                return (i + 1) * (i + 1);
-            } else {
-                answer = -1;
-            }
+        long num = (long) Math.sqrt(n);
+        
+        if (num * num == n) {
+            num += 1;
+            return num * num;
+        } else {
+            return -1;
         }
-        return answer;
     }
 }
