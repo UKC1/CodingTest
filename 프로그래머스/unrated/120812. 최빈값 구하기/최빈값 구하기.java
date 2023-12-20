@@ -1,28 +1,23 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
     public int solution(int[] array) {
+        int max = Arrays.stream(array).max().getAsInt();
+        int[] arr = new int[max + 1];
         
-        Arrays.sort(array);
-        int[] arr = new int[array[array.length - 1] + 1];
-        for (int i = 0; i < array.length; i++) {
-            arr[array[i]]++;
+        for(int i = 0; i < array.length;i++){
+            arr[array[i]]++;  
         }
         
-        int max = 0;
+        int count = 0;
+        int arrMax = Arrays.stream(arr).max().getAsInt();
         int idx = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (max < arr[i]) {
-                max = arr[i];
+        for(int i = 0 ; i < arr.length;i++) {
+            if(arrMax == arr[i]) {                
+                count++;
                 idx = i;
             }
         }
-        
-        Arrays.sort(arr);
-        if (arr.length >= 2 && arr[arr.length - 2] == max) {
-            return -1;
-        }
-        
-        return idx;
+        return count == 1 ? idx : -1;
     }
 }
