@@ -2,11 +2,11 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] array) {
-        int max = Arrays.stream(array).max().getAsInt();
-        int[] arr = new int[max + 1];
+        int lenMax = Arrays.stream(array).max().getAsInt();
+        int[] arr = new int[lenMax + 1];
         
-        for(int i = 0; i < array.length;i++){
-            arr[array[i]]++;  
+        for(int num : array) {
+            arr[num]++;  
         }
         
         int count = 0;
