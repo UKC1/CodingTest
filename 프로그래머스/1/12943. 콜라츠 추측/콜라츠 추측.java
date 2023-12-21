@@ -1,9 +1,6 @@
 class Solution {
     public int solution(long num) {
         int answer = 0;
-        if (num == 1) {
-            return 0;
-        }
         
         while (num > 1 && answer < 500) {
             if (num % 2 == 0) {
