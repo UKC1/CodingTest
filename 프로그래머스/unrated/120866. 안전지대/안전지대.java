@@ -1,21 +1,22 @@
 class Solution {
     public int solution(int[][] board) {
         int answer = 0;
-        boolean[][] visited = new boolean[board.length][board[0].length];
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
+        int len = board.length;
+        boolean[][] visited = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
                 if (board[i][j] == 1) {
                     answer += bomb(board, visited, i, j) + 1;
                 }
             }
         }
         
-        return visited.length * visited.length - answer;
+        return len * len - answer;
     }
     
     public int bomb(int[][] board, boolean[][] visited, int i, int j) {
         int cnt = 0;
-        int[] xLine = {-1, 0, 1};
+        int[] xLine = {-1, 0, 1,};
         int[] yLine = {-1, 0, 1};
         
         int xi = 0;
