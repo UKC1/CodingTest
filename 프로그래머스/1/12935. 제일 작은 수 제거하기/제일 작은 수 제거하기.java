@@ -1,20 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 class Solution {
     public int[] solution(int[] arr) {
-        int[] answer = new int[arr.length - 1];
         int min = Arrays.stream(arr).min().getAsInt();
-        ArrayList<Integer> list = new ArrayList();
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] != min) {
-                list.add(arr[i]);
-            }
-        }
-        
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = list.get(i);
-        }
-        return answer.length <= 0 ? new int[] {-1} : answer;
+        int[] answer = IntStream.of(arr).filter(n -> n != min).toArray();
+        return answer.length == 0 ? new int[] {-1} : answer;
     }
 }
