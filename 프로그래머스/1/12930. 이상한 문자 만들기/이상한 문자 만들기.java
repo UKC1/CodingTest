@@ -3,18 +3,18 @@ class Solution {
     public String solution(String s) {
         StringBuilder sb = new StringBuilder();
         char[] arr = s.toCharArray();
-        int ck = 1;
+        boolean isUpperCase = true;
     
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == ' ') {
                 sb.append(arr[i]);
-                ck = 1;
-            } else if (ck == 1) {
+                isUpperCase = true;
+            } else if (isUpperCase) {
                 sb.append(Character.toUpperCase(arr[i]));
-                ck *= -1;
-            } else if (ck == -1) {
+                isUpperCase = false;
+            } else if (!isUpperCase) {
                 sb.append(Character.toLowerCase(arr[i]));
-                ck *= -1;
+                isUpperCase = true;
             }
         }
         return sb.toString();
