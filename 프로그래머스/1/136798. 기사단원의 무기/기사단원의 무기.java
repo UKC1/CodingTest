@@ -9,7 +9,9 @@ class Solution {
                     if (j * j != i) {
                         cnt++;
                     }
-                } else if (cnt > limit) {
+                }
+                
+                if (cnt > limit) {
                     break;
                 }
             }
