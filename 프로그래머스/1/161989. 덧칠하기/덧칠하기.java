@@ -1,4 +1,3 @@
-import java.util.Arrays;
 class Solution {
     public int solution(int n, int m, int[] section) {
         int answer = 0;
@@ -8,7 +7,7 @@ class Solution {
             arr[section[i] - 1] = 1;
         }
         
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = section[0] - 1; i < arr.length; i++) {
             if (arr[i] == 1) {
                 paint(arr, i, n, m);
                 answer++;
