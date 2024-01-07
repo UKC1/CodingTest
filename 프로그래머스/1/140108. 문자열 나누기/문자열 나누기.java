@@ -12,15 +12,7 @@ class Solution {
             } else if (first == s.charAt(i)) {
                 cnt++;
             } else {
-                if (second == '2') {
-                    second = s.charAt(i);
-                    cnt--;
-                } else if (second == s.charAt(i)) {
-                    cnt--;
-                } else {
-                    other = s.charAt(i);
-                    cnt--;
-                }
+                cnt--;
             }
             
             if (cnt == 0) {
