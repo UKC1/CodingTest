@@ -18,11 +18,7 @@ class Solution {
             int get = map.get(gifts[i].split(" ")[1]);
             arr[post][get]++;
         }
-        
-        // for (int[] i : arr) {
-        //     System.out.println(Arrays.toString(i));
-        // }
-        // 선물 지수
+    
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) {
                 giftIdx[i] += arr[i][j];
@@ -41,10 +37,7 @@ class Solution {
                }
             }
         }
-        
-        
         Arrays.sort(getGift);
-        
         return getGift[getGift.length - 1];
     }
 }
