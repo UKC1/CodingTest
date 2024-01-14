@@ -1,19 +1,23 @@
-class Solution {
+public class Solution {
     public int solution(int n) {
         int answer = 0;
-        int idx = 1;
-        while (idx < n) {
-            int cnt = idx;
-            int i = idx + 1;
-            while (cnt < n) {
-                cnt += i;
-                i++;
-            }
-            if (cnt == n) {
+        int start = 1, end = 1;
+        int sum = 1;
+
+        while (end <= n) {
+            if (sum == n) {
                 answer++;
+                sum -= start;
+                start++;
+            } else if (sum < n) {
+                end++;
+                sum += end;
+            } else {
+                sum -= start;
+                start++;
             }
-            idx++;
         }
-        return answer + 1; 
+
+        return answer;
     }
 }
