@@ -1,17 +1,23 @@
-class Solution {
+public class Solution {
     public int solution(int n) {
-        String nToBinary = Integer.toString(n, 2);
-        String nToBinaryOne = nToBinary.replace("1", "");
-        int nLen = nToBinary.length() == nToBinaryOne.length() ? nToBinary.length() : nToBinary.length() - nToBinaryOne.length();
-        
-        int len = -1;
-        while(nLen != len) {
+        int nOneCount = countOnesInBinary(n);
+
+        do {
             n++;
-            nToBinary = Integer.toString(n, 2);
-            nToBinaryOne = nToBinary.replace("1", "");
-            len = nToBinary.length() == nToBinaryOne.length() ? nToBinary.length() : nToBinary.length() - nToBinaryOne.length();
-       
-        }
+        } while (countOnesInBinary(n) != nOneCount);
+
         return n;
     }
+
+    private int countOnesInBinary(int number) {
+        int count = 0;
+        while (number > 0) {
+            if ((number & 1) == 1) {
+                count++;
+            }
+            number >>= 1; // 오른쪽으로 1비트 이동
+        }
+        return count;
+    }
 }
+
