@@ -1,19 +1,19 @@
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
+
 class Solution {
     public int solution(int[] elements) {
-        int answer = 0;
-        TreeSet<Integer> set = new TreeSet();
-        int n = 1;
-        while(n <= elements.length) {
-            for (int i = 0; i < elements.length; i++) {
-                answer = 0;
-                for (int j = i; j < i + n; j++) {
-                    answer += elements[j % elements.length];
-                }
-                set.add(answer);
-            }    
-            n++;
+        Set<Integer> distinctSums = new HashSet<>();
+        int n = elements.length;
+
+        for (int i = 0; i < n; i++) {
+            int sum = 0;
+            for (int j = i; j < i + n; j++) {
+                sum += elements[j % n];
+                distinctSums.add(sum);
+            }
         }
-        return set.size();
+
+        return distinctSums.size();
     }
 }
