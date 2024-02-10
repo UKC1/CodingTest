@@ -1,14 +1,26 @@
-import java.util.*;
-import java.util.stream.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 class Solution {
     public int[] solution(String s) {
-        return Arrays.stream(s.substring(2, s.length() - 2).split("},\\{"))
-                     .map(str -> str.split(","))
-                     .sorted(Comparator.comparingInt(a -> a.length))
-                     .flatMap(Arrays::stream)
-                     .mapToInt(Integer::parseInt)
-                     .distinct()
-                     .toArray();
+        String[] sets = s.substring(1, s.length() - 1).replaceAll("[{}]", " ").split(" , ");
+        Arrays.sort(sets, Comparator.comparingInt(String::length));
+        
+        Set<Integer> set = new HashSet<>();
+        int[] answer = new int[sets.length];
+        int idx = 0;
+
+        for (String strSet : sets) {
+            for (String numStr : strSet.split(",")) {
+                int num = Integer.parseInt(numStr.trim());
+                if (set.add(num)) {
+                    answer[idx++] = num;
+                }
+            }
+        }
+
+        return answer;
     }
 }
