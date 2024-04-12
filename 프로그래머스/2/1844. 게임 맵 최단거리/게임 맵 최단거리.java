@@ -3,21 +3,17 @@ import java.util.LinkedList;
 
 class Solution {
     public int solution(int[][] maps) {
-        int answer = 0;
         int n = maps.length, m = maps[0].length;
-        Queue<int[] > queue = new LinkedList();
         boolean[][] visited = new boolean[n][m];
+        Queue<int[]> queue = new LinkedList();
         
         queue.offer(new int[] {0, 0, 1});
         visited[0][0] = true;
         
         while(!queue.isEmpty()) {
-            int[] check = queue.poll();
-            int x = check[0];
-            int y = check[1];
-            int dist = check[2];
-            
-            if (x == n - 1 && y == m - 1) {
+            int[] arr = queue.poll();
+            int x = arr[0], y = arr[1], dist = arr[2];
+            if(x == n - 1 && y == m - 1) {
                 return dist;
             }
             int[] dx = {-1, 0, 1, 0};
@@ -27,12 +23,13 @@ class Solution {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
                 
-                if(nx >= 0 && ny >= 0 && nx < n && ny < m && !visited[nx][ny] && maps[nx][ny] == 1) {
-                    visited[nx][ny] = true;
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m && !visited[nx][ny] && maps[nx][ny] == 1) {
                     queue.offer(new int[] {nx, ny, dist + 1});
+                    visited[nx][ny] = true;
                 }
             }
         }
+        
         return -1;
     }
 }
