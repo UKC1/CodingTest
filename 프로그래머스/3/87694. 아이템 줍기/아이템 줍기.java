@@ -1,8 +1,8 @@
 import java.util.*;
 
 class Solution {
-    static int[] dx = {0, 1, 0, -1};  // 상, 우, 하, 좌
-    static int[] dy = {1, 0, -1, 0};
+    static int[] dx = {1, 0, 0, -1};  // 상, 우, 하, 좌
+    static int[] dy = {0, 1, -1, 0};
 
     public int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
         boolean[][] isBoundary = new boolean[102][102];  // 경계 확인용
@@ -47,7 +47,7 @@ class Solution {
             int x = current[0], y = current[1], cnt = current[2];
 
             if (x == itemX * 2 && y == itemY * 2) {
-                return cnt / 2;  // 실제 거리는 좌표를 2배로 했으므로 2로 나눔
+                return cnt / 2;  
             }
 
             for (int i = 0; i < 4; i++) {
@@ -61,6 +61,6 @@ class Solution {
             }
         }
 
-        return -1;  // 경로를 찾을 수 없는 경우
+        return -1;
     }
 }
