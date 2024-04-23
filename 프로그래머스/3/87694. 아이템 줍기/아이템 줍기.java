@@ -1,7 +1,7 @@
 import java.util.*;
 class Solution {
-    int[] dx = {0, 1, 0, -1};
-    int[] dy = {1, 0, -1, 0};
+    int[] dx = {0, -1, 0, 1};
+    int[] dy = {-1, 0, 1, 0};
     public int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
         boolean[][] visited = new boolean[102][102];        
         boolean[][] isBoundary = new boolean[102][102];
