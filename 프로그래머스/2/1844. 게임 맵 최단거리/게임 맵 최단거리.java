@@ -1,6 +1,8 @@
 import java.util.*;
 
 class Solution {
+    
+    private static int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     public int solution(int[][] maps) {
       
         int n = maps.length, m = maps[0].length;
@@ -8,8 +10,7 @@ class Solution {
         Queue<int[]> queue = new LinkedList();
         queue.add(new int[] {0, 0, 1});
         visited[0][0] = true;
-        int[] dx = {1, 0, -1, 0};
-        int[] dy = {0, 1, 0, -1};
+      
         while(!queue.isEmpty()) {
             int[] arr = queue.poll();
             
@@ -17,9 +18,9 @@ class Solution {
                 return arr[2];
             }
             
-            for (int i = 0; i < 4; i++) {
-                int nx = arr[0] + dx[i];
-                int ny = arr[1] + dy[i];
+            for (int[] direction : directions) {
+                int nx = arr[0] + direction[0];
+                int ny = arr[1] + direction[1];
                 
                 if (nx >= 0 && ny >= 0 && nx < n && ny < m && !visited[nx][ny] && maps[nx][ny] == 1) {
                     visited[nx][ny] = true;
