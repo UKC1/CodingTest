@@ -2,11 +2,16 @@ class Solution {
     public int solution(int[][] sizes) {
         int max = 0;
         int min = 0;
-        
-        for (int i = 0; i < sizes.length; i++) {
-            max = max < Math.max(sizes[i][0], sizes[i][1]) ? Math.max(sizes[i][0], sizes[i][1]) : max;
-            min = min < Math.min(sizes[i][0], sizes[i][1]) ? Math.min(sizes[i][0], sizes[i][1]) : min;
+        for (int[] arr : sizes) {
+            int subMax = Math.max(arr[0], arr[1]);
+            int subMin = Math.min(arr[0], arr[1]);
+            if (max < subMax) {
+                max = subMax;
+            }
             
+            if (min < subMin) {
+                min = subMin;
+            }
         }
         return max * min;
     }
