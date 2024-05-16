@@ -1,35 +1,48 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Solution {
     public int solution(String numbers) {
-        HashSet<Integer> set = new HashSet<>();
-        permutation("", numbers, set);
-
-        int count = 0;
-        for (int number : set) {
-            if (isPrime(number)) {
-                count++;
+        int answer = 0;
+        boolean[] used = new boolean[numbers.length()];
+        Set<Integer> number = new HashSet();
+        String current = "";
+        permutation(current, numbers.toCharArray(), used, number);
+        for (Integer num : number) {
+            System.out.println(num);
+            if(isPrime(num)) {
+                answer++;
             }
         }
-        return count;
+        return answer;
     }
-
-    private void permutation(String prefix, String str, Set<Integer> set) {
-        int n = str.length();
-        if (!prefix.isEmpty()) {
-            set.add(Integer.parseInt(prefix));
+    
+    void permutation(String current, char[] numbers, boolean[] used, Set<Integer> number) {
+        if (!current.isEmpty()) {
+            number.add(Integer.parseInt(current));
         }
-        for (int i = 0; i < n; i++) {
-            permutation(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, n), set);
+        
+        for (int i = 0; i < numbers.length; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                permutation(current + numbers[i], numbers, used, number);
+                used[i] = false;
+            }
         }
     }
-
-    private boolean isPrime(int number) {
-        if (number < 2) return false;
-        for (int i = 2; i * i <= number; i++) {
-            if (number % i == 0) return false;
+    
+    public boolean isPrime(int num) {
+        if (num < 2) {
+            return false;
+        } else if (num == 2 || num == 3) {
+            return true;
         }
+        
+        for (int i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        
         return true;
     }
 }
