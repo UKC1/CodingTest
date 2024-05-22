@@ -6,12 +6,6 @@ class Solution {
             set.add(i);
         }
         
-        int answer = nums.length / 2;
-        
-        if (set.size() < nums.length / 2) {
-            answer = set.size();
-        }
-        
-        return answer;
+        return Math.min(set.size(), nums.length / 2);
     }
 }
