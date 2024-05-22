@@ -1,11 +1,17 @@
-import java.util.HashSet;
-
+import java.util.*;
 class Solution {
     public int solution(int[] nums) {
-        HashSet<Integer> set = new HashSet();
-        for (int i = 0; i < nums.length; i++) {
-            set.add(nums[i]);
+        Set<Integer> set = new HashSet();
+        for (Integer i : nums) {
+            set.add(i);
         }
-        return nums.length / 2 > set.size() ? set.size() : nums.length/2;
+        
+        int answer = nums.length / 2;
+        
+        if (set.size() < nums.length / 2) {
+            answer = set.size();
+        }
+        
+        return answer;
     }
 }
