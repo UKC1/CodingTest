@@ -1,17 +1,20 @@
 import java.util.*;
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        String answer = "";
-        Arrays.sort(participant);
-        Arrays.sort(completion);
-         
-        for (int i = 0; i < completion.length; i++) {
-            if (!participant[i].equals(completion[i])) {
-                answer = participant[i];
-                break;
-            }
+        Map<String, Integer> map = new HashMap();
+        for (String runner : participant) {
+            map.put(runner, map.getOrDefault(runner, 0) + 1);
         }
         
-        return answer.equals("") ? participant[completion.length] : answer;
+        for (String runner : completion) {
+            map.put(runner, map.get(runner) - 1);
+        }
+        
+        for (String runner : map.keySet()) {
+            if (map.get(runner) > 0) {
+                return runner;
+            }
+        }
+        return "";
     }
 }
