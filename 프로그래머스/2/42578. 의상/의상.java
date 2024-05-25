@@ -12,8 +12,6 @@ class Solution {
         for (String s : map.keySet()) {
             mul *= (map.get(s) + 1);
         }
-        System.out.println(map);
-        // 3C1 + 3C2 + 3C3 - 2C1;
         
         return mul - 1;
     }
