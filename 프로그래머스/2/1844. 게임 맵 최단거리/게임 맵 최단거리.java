@@ -1,33 +1,46 @@
 import java.util.*;
 
 class Solution {
-    
-    private static int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     public int solution(int[][] maps) {
-      
-        int n = maps.length, m = maps[0].length;
-        boolean[][] visited = new boolean[n][m];
-        Queue<int[]> queue = new LinkedList();
-        queue.add(new int[] {0, 0, 1});
+        
+        int x = maps.length, y = maps[0].length;
+        boolean[][] visited = new boolean[x][y];
+        Queue<Node> queue = new LinkedList();
+        queue.offer(new Node(0, 0, 1));
         visited[0][0] = true;
-      
-        while(!queue.isEmpty()) {
-            int[] arr = queue.poll();
-            
-            if (arr[0] + 1 == n && arr[1] + 1 == m) {
-                return arr[2];
+        
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+            if (node.currentX + 1 == x && node.currentY + 1 == y) {
+                return node.count;   
             }
-            
-            for (int[] direction : directions) {
-                int nx = arr[0] + direction[0];
-                int ny = arr[1] + direction[1];
+            int[] dx = {-1, 0, 1, 0};
+            int[] dy = {0, -1, 0, 1};
+            for (int i = 0; i < 4; i++) {
+                int nx = node.currentX + dx[i];
+                int ny = node.currentY + dy[i];
                 
-                if (nx >= 0 && ny >= 0 && nx < n && ny < m && !visited[nx][ny] && maps[nx][ny] == 1) {
+                if (nx >= 0 && ny >= 0 
+                    && nx < x && ny < y
+                   && !visited[nx][ny]
+                   && maps[nx][ny] == 1) {
                     visited[nx][ny] = true;
-                    queue.add(new int[] {nx, ny, arr[2] + 1});
+                    queue.offer(new Node(nx, ny, node.count + 1));
                 }
             }
         }
         return -1;
+    }
+}
+
+class Node {
+    int currentX;
+    int currentY;
+    int count;
+    
+    public Node(int currentX, int currentY, int count) {
+        this.currentX = currentX;
+        this.currentY = currentY;
+        this.count = count; 
     }
 }
