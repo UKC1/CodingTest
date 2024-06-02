@@ -2,45 +2,44 @@ import java.util.*;
 
 class Solution {
     public int solution(String numbers) {
-        Set<Integer> numberSet = new HashSet<>();
-        generatePermutations("", numbers.toCharArray(), new boolean[numbers.length()], numberSet);
-        
-        int maxNumber = numberSet.stream().mapToInt(i -> i).max().orElse(0);
-        boolean[] primeArray = sieveOfEratosthenes(maxNumber);
-        
         int answer = 0;
-        for (int num : numberSet) {
-            if (primeArray[num]) {
+        boolean[] visited = new boolean[numbers.length()];
+        Set<Integer> nums = new HashSet();
+        dfs("", numbers.toCharArray(), visited, nums);
+        for (Integer num : nums) {
+            if (isPrime(num)) {
                 answer++;
             }
         }
         return answer;
     }
     
-    void generatePermutations(String current, char[] numbers, boolean[] used, Set<Integer> numberSet) {
+    public void dfs(String current, char[] numArray, boolean[] visited, Set<Integer> nums) {
         if (!current.isEmpty()) {
-            numberSet.add(Integer.parseInt(current));
+            nums.add(Integer.parseInt(current));
         }
-        for (int i = 0; i < numbers.length; i++) {
-            if (!used[i]) {
-                used[i] = true;
-                generatePermutations(current + numbers[i], numbers, used, numberSet);
-                used[i] = false;
+        
+        for (int i = 0; i < numArray.length; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                dfs(current + numArray[i], numArray, visited, nums);
+                visited[i] = false;
             }
         }
     }
-
-    boolean[] sieveOfEratosthenes(int max) {
-        boolean[] prime = new boolean[max + 1];
-        Arrays.fill(prime, true);
-        prime[0] = prime[1] = false;
-        for (int p = 2; p * p <= max; p++) {
-            if (prime[p]) {
-                for (int i = p * p; i <= max; i += p) {
-                    prime[i] = false;
-                }
+    
+    public boolean isPrime(int n) {
+        if (n <= 1) {
+            return false;
+        } else if (n == 2 || n == 3) {
+            return true;
+        }
+        
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
+                return false;
             }
         }
-        return prime;
+        return true;
     }
 }
