@@ -3,32 +3,38 @@ import java.util.*;
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
         Map<String, Integer> genrePlayCount = new HashMap<>();
-        Map<String, PriorityQueue<Song>> genreSongs = new HashMap<>();
-        
-        // 각 장르별 총 재생 횟수 계산 및 노래를 우선순위 큐에 저장
+        Map<String, List<Song>> songMap = new HashMap<>();
+
+        // 장르별 총 재생 횟수와 각 노래 정보 수집
         for (int i = 0; i < genres.length; i++) {
             genrePlayCount.put(genres[i], genrePlayCount.getOrDefault(genres[i], 0) + plays[i]);
+            songMap.computeIfAbsent(genres[i], k -> new ArrayList<>()).add(new Song(i, plays[i]));
+        }
 
-            genreSongs.putIfAbsent(genres[i], new PriorityQueue<>((a, b) -> a.plays == b.plays ? a.index - b.index : b.plays - a.plays));
-            genreSongs.get(genres[i]).add(new Song(i, plays[i]));
+        // 각 장르별 노래 리스트를 재생 횟수와 인덱스 순으로 정렬
+        for (List<Song> songs : songMap.values()) {
+            songs.sort((a, b) -> b.plays != a.plays ? b.plays - a.plays : a.index - b.index);
         }
 
         // 장르를 총 재생 횟수에 따라 정렬
         List<String> sortedGenres = new ArrayList<>(genrePlayCount.keySet());
         sortedGenres.sort((a, b) -> genrePlayCount.get(b) - genrePlayCount.get(a));
 
+        // 결과로 반환할 상위 두 곡의 인덱스 수집
         List<Integer> answerList = new ArrayList<>();
-        // 각 장르별로 가장 많이 재생된 두 곡 선택
         for (String genre : sortedGenres) {
-            PriorityQueue<Song> queue = genreSongs.get(genre);
+            List<Song> songs = songMap.get(genre);
             int count = 0;
-            while (!queue.isEmpty() && count < 2) {
-                answerList.add(queue.poll().index);
-                count++;
+            for (Song song : songs) {
+                if (count < 2) {
+                    answerList.add(song.index);
+                    count++;
+                } else {
+                    break;
+                }
             }
         }
 
-        // 리스트를 배열로 변환
         return answerList.stream().mapToInt(i -> i).toArray();
     }
 
