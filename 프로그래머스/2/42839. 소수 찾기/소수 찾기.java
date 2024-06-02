@@ -2,47 +2,45 @@ import java.util.*;
 
 class Solution {
     public int solution(String numbers) {
+        Set<Integer> numberSet = new HashSet<>();
+        generatePermutations("", numbers.toCharArray(), new boolean[numbers.length()], numberSet);
+        
+        int maxNumber = numberSet.stream().mapToInt(i -> i).max().orElse(0);
+        boolean[] primeArray = sieveOfEratosthenes(maxNumber);
+        
         int answer = 0;
-        boolean[] used = new boolean[numbers.length()];
-        Set<Integer> number = new HashSet();
-        String current = "";
-        permutation(current, numbers.toCharArray(), used, number);
-        for (Integer num : number) {
-            System.out.println(num);
-            if(isPrime(num)) {
+        for (int num : numberSet) {
+            if (primeArray[num]) {
                 answer++;
             }
         }
         return answer;
     }
     
-    void permutation(String current, char[] numbers, boolean[] used, Set<Integer> number) {
+    void generatePermutations(String current, char[] numbers, boolean[] used, Set<Integer> numberSet) {
         if (!current.isEmpty()) {
-            number.add(Integer.parseInt(current));
+            numberSet.add(Integer.parseInt(current));
         }
-        
         for (int i = 0; i < numbers.length; i++) {
             if (!used[i]) {
                 used[i] = true;
-                permutation(current + numbers[i], numbers, used, number);
+                generatePermutations(current + numbers[i], numbers, used, numberSet);
                 used[i] = false;
             }
         }
     }
-    
-    public boolean isPrime(int num) {
-        if (num < 2) {
-            return false;
-        } else if (num == 2 || num == 3) {
-            return true;
-        }
-        
-        for (int i = 2; i <= Math.sqrt(num); i++) {
-            if (num % i == 0) {
-                return false;
+
+    boolean[] sieveOfEratosthenes(int max) {
+        boolean[] prime = new boolean[max + 1];
+        Arrays.fill(prime, true);
+        prime[0] = prime[1] = false;
+        for (int p = 2; p * p <= max; p++) {
+            if (prime[p]) {
+                for (int i = p * p; i <= max; i += p) {
+                    prime[i] = false;
+                }
             }
         }
-        
-        return true;
+        return prime;
     }
 }
