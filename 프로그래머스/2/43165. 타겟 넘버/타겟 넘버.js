@@ -1,17 +1,17 @@
-var cnt = 0;
+var count = 0;
 function solution(numbers, target) {
-    dfs(numbers, 0, 0, target);
-    return cnt;
+    dfs(numbers, target, 0, 0);
+    return count;
 }
 
-function dfs(numbers, idx, sum, target) {
+function dfs (numbers, target, sum, idx) {
     if (idx == numbers.length) {
-        if (sum == target) {
-            cnt++;
+        if (target == sum) {
+            count++;
         }
         return;
     }
     
-    dfs(numbers, idx + 1, sum + numbers[idx], target);
-    dfs(numbers, idx + 1, sum - numbers[idx], target);
+    dfs(numbers, target, sum + numbers[idx], idx + 1);
+    dfs(numbers, target, sum - numbers[idx], idx + 1);
 }
