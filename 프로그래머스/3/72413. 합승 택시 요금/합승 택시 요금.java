@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        final int INF = 10000000; // 더 작은 값으로 설정
+        final int INF = Integer.MAX_VALUE; // 더 작은 값으로 설정
         List<int[]>[] graph = new ArrayList[n + 1];
         
         for (int i = 1; i <= n; i++) {
