@@ -1,10 +1,11 @@
 import java.util.*;
+
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        final int INF = 100000000;
+        final int INF = 10000000; // 더 작은 값으로 설정
         List<int[]>[] graph = new ArrayList[n + 1];
         
-        for (int i = 0; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             graph[i] = new ArrayList<>();
         }
         
@@ -18,9 +19,9 @@ class Solution {
         }
         
         // 다익스트라 알고리즘을 사용하여 최단 거리 계산
-        int[] distFromS = dijkstra(s, graph, n);
-        int[] distFromA = dijkstra(a, graph, n);
-        int[] distFromB = dijkstra(b, graph, n);
+        int[] distFromS = dijkstra(s, graph, n, INF);
+        int[] distFromA = dijkstra(a, graph, n, INF);
+        int[] distFromB = dijkstra(b, graph, n, INF);
         
         int answer = INF;
         
@@ -32,8 +33,7 @@ class Solution {
         return answer;
     }
     
-    private int[] dijkstra(int start, List<int[]>[] graph, int n) {
-        final int INF = 100000000;
+    private int[] dijkstra(int start, List<int[]>[] graph, int n, int INF) {
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
         int[] dist = new int[n + 1];
         Arrays.fill(dist, INF);
