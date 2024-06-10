@@ -53,12 +53,17 @@ class Solution {
     }
 
     private void dfs(int[][] board, int x, int y, boolean[][] visited, List<int[]> part, int type) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board.length || visited[x][y] || board[x][y] != type)
+        if (x < 0 || x >= board.length || y < 0 || y >= board.length || visited[x][y] || board[x][y] != type) {
             return;
+        }
+
         visited[x][y] = true;
         part.add(new int[]{x, y});
+
         for (int d = 0; d < 4; d++) {
-            dfs(board, x + dx[d], y + dy[d], visited, part, type);
+            int nx = x + dx[d];
+            int ny = y + dy[d];
+            dfs(board, nx, ny, visited, part, type);
         }
     }
 
