@@ -1,31 +1,36 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
+import java.util.*;
 class Solution {
     public int[] solution(int[] answers) {
-        int[] answer = new int[3];
-        int[] one = {1, 2, 3, 4, 5};
-        int[] two = {2, 1, 2, 3, 2, 4, 2, 5};
-        int[] three = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
+        int[] count = new int[3];
+        int[] first = {1,2,3,4,5};
+        int[] second = {2,1,2,3,2,4,2,5};
+        int[] third = {3,3,1,1,2,2,4,4,5,5};
         
-        for (int i = 0; i < answers.length; i++) {
-            if (answers[i] == one[i % one.length]) answer[0]++; 
-            if (answers[i] == two[i % two.length]) answer[1]++; 
-            if (answers[i] == three[i % three.length]) answer[2]++; 
+        for (int i = 0 ; i < answers.length; i++) {
+            if (answers[i] == first[i % first.length]) count[0]++;
+            if (answers[i] == second[i % second.length]) count[1]++;
+            if (answers[i] == third[i % third.length]) count[2]++;
+            
         }
-        
-        List<Integer> list = Arrays.asList(answer[0], answer[1], answer[2]);
-        List<Integer> score = new ArrayList();
-        int max = Collections.max(list);
-        
-        for (int i = 0; i < list.size(); i++) {
-            if (max == answer[i]) {
-                score.add(i + 1);
+        int maxNum = 0;
+        for (int i = 0; i < count.length; i++) {
+            if (maxNum < count[i]) {
+                maxNum = count[i];
             }
         }
         
-        return score.stream().mapToInt(i -> i).toArray();
+        List<Integer> list = new ArrayList();
+        for (int i = 0 ; i < count.length; i++) {
+            if (maxNum == count[i]) {
+                list.add(i + 1);
+            }
+        }
+        
+        int[] answer = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            answer[i] = list.get(i);
+        }
+        
+        return answer;
     }
 }
