@@ -1,12 +1,11 @@
 import java.util.*;
-
 class Solution {
     public int solution(String numbers) {
         int answer = 0;
+        Set<Integer> set = new HashSet();
         boolean[] visited = new boolean[numbers.length()];
-        Set<Integer> nums = new HashSet();
-        dfs("", numbers.toCharArray(), visited, nums);
-        for (Integer num : nums) {
+        dfs("", numbers.toCharArray(), set, visited, 0);
+        for (Integer num : set) {
             if (isPrime(num)) {
                 answer++;
             }
@@ -14,24 +13,27 @@ class Solution {
         return answer;
     }
     
-    public void dfs(String current, char[] numArray, boolean[] visited, Set<Integer> nums) {
-        if (!current.isEmpty()) {
-            nums.add(Integer.parseInt(current));
-        }
+    public void dfs(String current, char[] numbers, Set<Integer> set, boolean[] visited, int start){
         
-        for (int i = 0; i < numArray.length; i++) {
+        if (!current.isEmpty()){
+            set.add(Integer.parseInt(current));  
+        }
+                
+        for (int i = 0; i < numbers.length; i++) {
             if (!visited[i]) {
                 visited[i] = true;
-                dfs(current + numArray[i], numArray, visited, nums);
+                dfs(current + numbers[i], numbers, set, visited, i);       
                 visited[i] = false;
-            }
+            }       
+               
         }
     }
     
     public boolean isPrime(int n) {
-        if (n <= 1) {
+        if (n < 2) {
             return false;
-        } else if (n == 2 || n == 3) {
+        }
+        if (n == 2 || n == 3) {
             return true;
         }
         
@@ -40,6 +42,7 @@ class Solution {
                 return false;
             }
         }
+        
         return true;
     }
 }
