@@ -53,35 +53,45 @@ class Solution {
     }
 
     private void dfs(int[][] board, int x, int y, boolean[][] visited, List<int[]> part, int type) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board.length || visited[x][y] || board[x][y] != type) {
-            return;
-        }
-
         visited[x][y] = true;
         part.add(new int[]{x, y});
 
         for (int d = 0; d < 4; d++) {
             int nx = x + dx[d];
             int ny = y + dy[d];
-            dfs(board, nx, ny, visited, part, type);
+
+            // nx, ny 값에 제약을 둠
+            if (nx >= 0 && nx < board.length && ny >= 0 && ny < board.length && !visited[nx][ny] && board[nx][ny] == type) {
+                dfs(board, nx, ny, visited, part, type);
+            }
         }
     }
 
     private int[][] convertToArray(List<int[]> part) {
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
+        
+        // 좌표 리스트에서 최소 x와 y 값을 찾음
         for (int[] p : part) {
             minX = Math.min(minX, p[0]);
             minY = Math.min(minY, p[1]);
         }
+        
         int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+        
+        // 좌표 리스트에서 최대 x와 y 값을 찾음
         for (int[] p : part) {
             maxX = Math.max(maxX, p[0]);
             maxY = Math.max(maxY, p[1]);
         }
+        
+        // 정규화된 크기의 2차원 배열 생성
         int[][] array = new int[maxX - minX + 1][maxY - minY + 1];
+        
+        // 좌표를 배열에 매핑
         for (int[] p : part) {
             array[p[0] - minX][p[1] - minY] = 1;
         }
+        
         return array;
     }
 
