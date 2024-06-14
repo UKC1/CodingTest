@@ -1,22 +1,22 @@
-import java.util.Arrays;
+import java.util.*;
+
 class Solution {
     public int solution(int[] citations) {
         Arrays.sort(citations);
-        int n = citations.length;
-        int hIdx = 0;
-        
-        for (int i = 0; i <= citations[n - 1]; i++) {
-            int cnt = 0;
-            for (int j = 0; j < n; j++) {
-                if (i <= citations[j]) {
-                    cnt++;
+        int idx = 0;
+        int count = 0;
+        while(idx <= citations.length - count) {
+            count = 0;
+            for (int i = 0; i < citations.length; i++) {
+                if (idx >= citations[i]) {
+                    count++;
                 }
-            }
             
-            if (cnt >= i && i >= n - cnt) {
-                hIdx = i;
-            }
+             }
+            idx++;
         }
-        return hIdx;
+        
+        return idx - 1;
+        
     }
 }
