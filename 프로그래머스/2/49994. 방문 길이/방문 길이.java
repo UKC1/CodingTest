@@ -17,16 +17,20 @@ class Solution {
             int ny = y + move[1];
 
             if (nx >= -5 && nx <= 5 && ny >= -5 && ny <= 5) {
-                String path1 = x + "," + y + "," + nx + "," + ny;
-                String path2 = nx + "," + ny + "," + x + "," + y;
+                StringBuilder path1 = new StringBuilder();
+                path1.append(x).append(",").append(y).append(",").append(nx).append(",").append(ny);
+                
+                StringBuilder path2 = new StringBuilder();
+                path2.append(nx).append(",").append(ny).append(",").append(x).append(",").append(y);
 
-                if (visited.add(path1)) {  // if path1 is newly added, path2 will be implicitly added
-                    visited.add(path2);
+                if (visited.add(path1.toString())) {
+                    visited.add(path2.toString());
                 }
+                
                 x = nx;
                 y = ny;
             }
         }
-        return visited.size() / 2;  // since each path is stored twice
+        return visited.size() / 2;
     }
 }
