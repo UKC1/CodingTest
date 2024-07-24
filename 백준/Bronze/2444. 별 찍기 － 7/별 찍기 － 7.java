@@ -6,24 +6,16 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
-        // 위쪽 피라미드
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= N - i; j++) {
-                System.out.print(" ");
-            }
-            for (int j = 1; j <= 2 * i - 1; j++) {
-                System.out.print("*");
-            }
-            System.out.println();
-        }
-
-        // 아래쪽 피라미드
-        for (int i = N - 1; i >= 1; i--) {
-            for (int j = 1; j <= N - i; j++) {
-                System.out.print(" ");
-            }
-            for (int j = 1; j <= 2 * i - 1; j++) {
-                System.out.print("*");
+        int M = 2 * N - 1;
+        for (int i = 0; i < M; i++) {
+            int start = Math.max(N - 1, N - 1 + 2 * (i - N + 1));
+            int end = Math.min(3 * (N - 1), N - 1 + 2 * i);
+            for (int j = 0; j < M; j++) {
+                if (i + j >= start && i + j <= end) {
+                    System.out.print("*");
+                } else if (i + j < start){
+                    System.out.print(" ");
+                }
             }
             System.out.println();
         }
