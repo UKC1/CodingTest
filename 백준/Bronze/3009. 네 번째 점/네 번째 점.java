@@ -20,12 +20,14 @@ public class Main {
         for (int i = 0; i < xArr.length; i++) {
             if (xArr[i] == 1) {
                 System.out.print(i + " ");
+                break;
             }
         }
 
         for (int i = 0; i < yArr.length; i++) {
             if (yArr[i] == 1) {
                 System.out.print(i + " ");
+                break;
             }
         }
 
