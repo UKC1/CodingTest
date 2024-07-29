@@ -8,11 +8,10 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
-        int maxX = Integer.MIN_VALUE;
-        int minX = Integer.MAX_VALUE;
-
-        int maxY = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
+        int maxX = -10001;
+        int minX = 10001;
+        int maxY = -10001;
+        int minY = 10001;
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
