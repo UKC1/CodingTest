@@ -17,10 +17,10 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
             int y = Integer.parseInt(st.nextToken());
-            maxX = Math.max(maxX, x);
-            minX = Math.min(minX, x);
-            maxY = Math.max(maxY, y);
-            minY = Math.min(minY, y);
+            if(maxX < x) maxX = x;
+            if(minX > x) minX = x;
+            if(maxY < y) maxY = y;
+            if(minY > y) minY = y;
         }
         System.out.println((maxX - minX) * (maxY - minY));
     }
