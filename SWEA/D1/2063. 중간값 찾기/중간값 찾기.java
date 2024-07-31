@@ -10,24 +10,32 @@ public class Solution {
         int N = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
         int[] arr = new int[N];
+        int max = -1;
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
+            if (max < arr[i]) {
+                max = arr[i];
+            }
         }
-        selectionSort(arr);
-        System.out.println(arr[N / 2]);
+        int[] newArr = countingSort(arr, max);
+
+        System.out.println(newArr[N / 2]);
     }
 
-    public static void selectionSort(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            int minIdx = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[minIdx] > arr[j]) {
-                    minIdx = j;
-                }
-            }
-            int tmp = arr[i];
-            arr[i] = arr[minIdx];
-            arr[minIdx] = tmp;
+    public static int[] countingSort(int[] arr, int max) {
+        int[] cnt = new int[max + 1];
+        for (int i = 0; i < arr.length; i++) {
+            cnt[arr[i]]++;
         }
+
+        for (int i = 1; i < cnt.length; i++) {
+            cnt[i] += cnt[i - 1]; 
+        }
+        
+        int[] newArr = new int[arr.length];
+        for (int i = arr.length - 1; i >= 0; i--) {
+            newArr[--cnt[arr[i]]] = arr[i];
+        }
+        return newArr;
     }
 }
