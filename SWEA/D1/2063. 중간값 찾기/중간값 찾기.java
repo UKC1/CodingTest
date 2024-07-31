@@ -13,22 +13,21 @@ public class Solution {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-        bubbleSort(arr);
+        selectionSort(arr);
         System.out.println(arr[N / 2]);
     }
 
-    public static void bubbleSort(int[] arr) {
+    public static void selectionSort(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
-            boolean doSort = true;
-            for (int j = 0; j < arr.length - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    int tmp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = tmp;
-                    doSort = false;
+            int minIdx = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[minIdx] > arr[j]) {
+                    minIdx = j;
                 }
             }
-            if (doSort) break;
+            int tmp = arr[i];
+            arr[i] = arr[minIdx];
+            arr[minIdx] = tmp;
         }
     }
 }
