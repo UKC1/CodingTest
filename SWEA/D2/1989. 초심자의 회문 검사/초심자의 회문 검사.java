@@ -10,14 +10,14 @@ public class Solution {
         int T = Integer.parseInt(st.nextToken());
         for (int test_case = 1; test_case <= T; test_case++) {
             String str = br.readLine();
-            boolean isPalindrome = true;
+            boolean isPalidrome = true;
             for (int i = 0; i < str.length() / 2; i++) {
                 if (str.charAt(i) != str.charAt(str.length() - 1 - i)) {
-                    isPalindrome = false;
+                    isPalidrome = false;
                     break;
                 }
             }
-            System.out.println("#" + test_case + " " + (isPalindrome ? 1 : 0));
+            System.out.println("#" + test_case + " " + (isPalidrome ? 1 : 0));
         }
     }
 }
