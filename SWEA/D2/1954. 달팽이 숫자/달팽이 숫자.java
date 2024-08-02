@@ -11,66 +11,30 @@ public class Solution {
 		int T = Integer.parseInt(st.nextToken());
 		for (int test_case = 1; test_case <= T; test_case++) {
 			int N = Integer.parseInt(br.readLine());
-			boolean rightStart = true;
-			boolean downStart = false;
-			boolean leftStart = false;
-			boolean upStart = false;
-			
+
+			int[] dx = {0, 1, 0, -1};
+			int[] dy = {1, 0, -1, 0};
+			int currentX = 0, currentY = 0;
 			int[][] map = new int[N][N];
 			int cnt = 1;
 			int row = 0;
 			int col = 0;
-			map[0][0] = 1;
-			while(cnt < N * N) {
-
-				if (rightStart) {
-					int nCol = col + 1;
-					if (nCol >= N || map[row][nCol] != 0) {
-						rightStart = false;
-						downStart = true;
-					} else {
-						col = nCol;
-						map[row][col] = ++cnt;
-					}
+			int dirCnt = 0;
+			while(cnt <= N * N) {
+				map[row][col] = cnt;
+				int nRow = row + dx[currentX];
+				int nCol = col + dy[currentY];
+				if (nRow >= 0 && nRow < N && nCol >= 0 && nCol < N && map[nRow][nCol] == 0) {
+					row = nRow;
+					col = nCol;
+					cnt++;
+					dirCnt = 0;
+				} else {
+					currentX = (currentX + 1) % 4;
+					currentY = (currentY + 1) % 4;
+					dirCnt++;
+					if (dirCnt > 1) break;
 				}
-
-				if (downStart) {
-					int nRow = row + 1;
-					if (nRow >= N || map[nRow][col] != 0) {
-						downStart = false;
-						leftStart = true;
-					} else {
-						row = nRow;
-						map[row][col] = ++cnt;
-					}
-				}
-
-				if (leftStart) {
-					int nCol = col - 1;
-					if (nCol < 0 || map[row][nCol] != 0) {
-						leftStart = false;
-						upStart = true;
-					} else {
-						col = nCol;
-						map[row][col] = ++cnt;
-					}
-				}
-
-				if (upStart) {
-					int nRow = row - 1;
-					if (nRow < 0 || map[nRow][col] != 0) {
-						upStart = false;
-						rightStart = true;
-					} else {
-						row = nRow;
-						map[row][col] = ++cnt;
-					}
-				}
-
-				if (!rightStart && !downStart && !leftStart && !upStart) {
-					break;
-				}
-
 			}
 
 			System.out.println("#" + test_case);
