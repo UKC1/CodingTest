@@ -2,19 +2,23 @@ import java.util.*;
 
 class Solution {
     public boolean solution(String[] phone_book) {
-        boolean answer = true;
-        Map<String, Integer> map = new HashMap();
-        for (String phone : phone_book) {
-            map.put(phone, 1);
-        }
+            Map<String, Integer> map = new HashMap<>();
+            for(int i = 0; i < phone_book.length; i++) {
+                map.put(phone_book[i], i);
+            }
         
-        for (String phone : phone_book) {
-            for (int i = 1; i < phone.length(); i++) {
-                if (map.containsKey(phone.substring(0, i))) {
-                    return false;
+            for (int i = 0; i < phone_book.length; i++) {
+                if (phone_book[i].length() > 1) {
+                    for (int j = 1; j < phone_book[i].length(); j++) {
+                        if (map.containsKey(phone_book[i].substring(0, j))) {
+                            return false;
+                        }
+                    }
                 }
             }
-        }
-        return answer;
+        
+        
+      
+        return true;
     }
 }
