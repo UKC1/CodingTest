@@ -7,18 +7,20 @@ public class Solution {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int T = Integer.parseInt(st.nextToken());
+		int T = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		for (int test_case = 1; test_case <= T; test_case++) {
-			if (clapCount(test_case) == 0) {
-				System.out.print(test_case);
+			int getClapCount = clapCount(test_case);
+			if (getClapCount == 0) {
+				sb.append(test_case);
 			} else {
-				for (int i = 0; i < clapCount(test_case); i++) {
-					System.out.print("-");
+				for (int i = 0; i < getClapCount; i++) {
+					sb.append("-");
 				}
 			}
-			System.out.print(" ");
+			sb.append(" ");
 		}
+		System.out.println(sb.toString().trim());
 	}
 
 	public static int clapCount(int n) {
