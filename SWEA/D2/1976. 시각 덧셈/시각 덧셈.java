@@ -5,28 +5,30 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int T = Integer.parseInt(st.nextToken());
-		for (int test_case = 1; test_case <= T; test_case++) {
-			st = new StringTokenizer(br.readLine());
-			int startHour = Integer.parseInt(st.nextToken());
-			int startMin = Integer.parseInt(st.nextToken());
-			int endHour = Integer.parseInt(st.nextToken());
-			int endMin = Integer.parseInt(st.nextToken());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+        for (int test_case = 1; test_case <= T; test_case++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int startHour = Integer.parseInt(st.nextToken());
+            int startMin = Integer.parseInt(st.nextToken());
+            int endHour = Integer.parseInt(st.nextToken());
+            int endMin = Integer.parseInt(st.nextToken());
 
-			int sumHour = startHour + endHour;
-			int sumMin = startMin + endMin;
-			int totalMin = sumHour * 60 + sumMin;
-			int hour = (totalMin / 60) % 25;
-			if (hour > 12) {
-				hour -= 12;
-			}
-			int min = totalMin % 60;
+            int sumHour = startHour + endHour;
+            int sumMin = startMin + endMin;
 
-			System.out.println("#" + test_case + " " + hour + " " + min);
+            // 분을 시간으로 변환
+            sumHour += sumMin / 60;
+            int min = sumMin % 60;
 
-		}
-	}
+            // 12시간제로 변환
+            int hour = sumHour % 12;
+            if (hour == 0) {
+                hour = 12;
+            }
+
+            System.out.println("#" + test_case + " " + hour + " " + min);
+        }
+    }
 }
