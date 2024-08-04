@@ -1,39 +1,31 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Solution {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int T = Integer.parseInt(st.nextToken());
+		int T = Integer.parseInt(br.readLine().trim());
 		for (int test_case = 1; test_case <= T; test_case++) {
-			int K = Integer.parseInt(br.readLine());
-			st = new StringTokenizer(br.readLine());
-			int totalGames = (int)Math.pow(2, K);
+			int K = Integer.parseInt(br.readLine().trim());
+			int totalGames = (int) Math.pow(2, K);
 
-			List<Integer> list = new ArrayList<>();
+			int[] players = new int[totalGames];
+			StringTokenizer st = new StringTokenizer(br.readLine());
 			for (int i = 0; i < totalGames; i++) {
-				list.add(Integer.parseInt(st.nextToken()));
+				players[i] = Integer.parseInt(st.nextToken());
 			}
 
 			int totalScore = 0;
-			while (list.size() > 1) {
-				List<Integer> temp = new ArrayList<>();
-				for (int i = 0; i < list.size(); i+=2) {
-					if (list.get(i) < list.get(i+1)) {
-						totalScore += list.get(i+1) - list.get(i);
-						temp.add(list.get(i + 1));
-					} else {
-						totalScore += list.get(i) - list.get(i+1);
-						temp.add(list.get(i));
-					}
+			while (totalGames > 1) {
+				for (int i = 0; i < totalGames; i += 2) {
+					int diff = Math.abs(players[i] - players[i + 1]);
+					totalScore += diff;
+					players[i / 2] = Math.max(players[i], players[i + 1]);
 				}
-				list = temp;
+				totalGames /= 2;
 			}
 			System.out.println("#" + test_case + " " + totalScore);
 		}
