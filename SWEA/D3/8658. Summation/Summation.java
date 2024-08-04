@@ -7,24 +7,24 @@ public class Solution {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int T = Integer.parseInt(st.nextToken());
+		int T = Integer.parseInt(br.readLine().trim());
+
 		for (int test_case = 1; test_case <= T; test_case++) {
-			st = new StringTokenizer(br.readLine());
-			int[] arr = new int[10];
-			int max = 0;
-			int min = 1000001;
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int max = Integer.MIN_VALUE;
+			int min = Integer.MAX_VALUE;
+
 			for (int i = 0; i < 10; i++) {
 				int num = Integer.parseInt(st.nextToken());
-				arr[i] = allNumSum(num);
-				if (max < arr[i]) max = arr[i];
-				if (min > arr[i]) min = arr[i];
+				int sum = digitSum(num);
+				if (max < sum) max = sum;
+				if (min > sum) min = sum;
 			}
 			System.out.println("#" + test_case + " " + max + " " + min);
 		}
 	}
 	
-	public static int allNumSum(int num) {
+	public static int digitSum(int num) {
 		int sum = 0;
 		while (num > 0) {
 			sum += num % 10;
