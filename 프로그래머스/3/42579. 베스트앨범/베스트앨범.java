@@ -1,51 +1,78 @@
 import java.util.*;
 
 class Solution {
+    class Song {
+        int idx;
+        int playCnt;
+        Song() {}
+        Song(int idx, int playCnt) {
+            this.idx = idx;
+            this.playCnt = playCnt;
+        }
+        
+        public String toString() {
+            return "idx " + idx + " playCnt " + playCnt;
+        }
+    }
     public int[] solution(String[] genres, int[] plays) {
-        Map<String, Integer> genrePlayCount = new HashMap<>();
-        Map<String, List<Song>> songMap = new HashMap<>();
-
-        // 장르별 총 재생 횟수와 각 노래 정보 수집
+        // 1. 장르별 속한 노래 카운트
+        Map<String, Integer> genrePlays = new HashMap<>();
         for (int i = 0; i < genres.length; i++) {
-            genrePlayCount.put(genres[i], genrePlayCount.getOrDefault(genres[i], 0) + plays[i]);
-            songMap.computeIfAbsent(genres[i], k -> new ArrayList<>()).add(new Song(i, plays[i]));
+            genrePlays.put(genres[i], genrePlays.getOrDefault(genres[i], 0) + plays[i]);
         }
-
-        // 각 장르별 노래 리스트를 재생 횟수와 인덱스 순으로 정렬
-        for (List<Song> songs : songMap.values()) {
-            songs.sort((a, b) -> b.plays != a.plays ? b.plays - a.plays : a.index - b.index);
-        }
-
-        // 장르를 총 재생 횟수에 따라 정렬
-        List<String> sortedGenres = new ArrayList<>(genrePlayCount.keySet());
-        sortedGenres.sort((a, b) -> genrePlayCount.get(b) - genrePlayCount.get(a));
-
-        // 결과로 반환할 상위 두 곡의 인덱스 수집
-        List<Integer> answerList = new ArrayList<>();
-        for (String genre : sortedGenres) {
-            List<Song> songs = songMap.get(genre);
-            int count = 0;
-            for (Song song : songs) {
-                if (count < 2) {
-                    answerList.add(song.index);
-                    count++;
-                } else {
-                    break;
-                }
+        // 2. 장르별 곡들 수록
+        Map<String, List<Song>> sameGenreSongs = new HashMap<>();
+        for (int i = 0; i < genres.length; i++) {
+            if (sameGenreSongs.get(genres[i]) == null) {
+                List<Song> songList = new ArrayList<>();
+                songList.add(new Song(i, plays[i]));
+                sameGenreSongs.put(genres[i], songList);
+            } else {
+                sameGenreSongs.get(genres[i]).add(new Song(i, plays[i]));
             }
         }
-
-        return answerList.stream().mapToInt(i -> i).toArray();
-    }
-
-    // 노래 정보를 저장하기 위한 도우미 클래스
-    class Song {
-        int index;
-        int plays;
-
-        Song(int index, int plays) {
-            this.index = index;
-            this.plays = plays;
+        
+        // 3. 장르 내 곡들 재생횟수 기준으로 내림차순 정렬 같으면 고유 번호가 오름차순으로 정렬
+        for (List<Song> list : sameGenreSongs.values()) {
+            Collections.sort(list, Comparator
+                    .comparingInt((Song s) -> -s.playCnt)
+                    .thenComparingInt(s -> s.idx));
         }
+        
+        int[] arr = new int[genrePlays.size()];
+        int idx = 0;
+        for (Integer cntNum : genrePlays.values()) {
+            arr[idx++] = cntNum;
+        }
+        
+        Arrays.sort(arr);
+        List<Integer> idxList = new ArrayList<>();
+        for (int i = arr.length - 1; i >= 0; i--) {
+            String checkStr = "";
+            for (String genre : genrePlays.keySet()) {
+                if (genrePlays.get(genre) == arr[i]) {
+                    checkStr = genre;
+                    break;
+                } 
+            }
+            
+            int cnt = 2;
+            for (Song song : sameGenreSongs.get(checkStr)) {
+                if (cnt == 0) break;
+                idxList.add(song.idx);
+                cnt--;
+            }
+        }
+        
+        int[] answer = new int[idxList.size()];
+        for (int i = 0; i < idxList.size(); i++) {
+            answer[i] = idxList.get(i);
+        }
+        // System.out.println(idxList);
+        // System.out.println(Arrays.toString(arr));
+        // System.out.println(genrePlays);
+        // System.out.println(sameGenreSongs);
+        
+        return answer;
     }
 }
