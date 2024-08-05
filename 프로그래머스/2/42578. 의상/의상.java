@@ -7,12 +7,11 @@ class Solution {
             map.put(clothes[i][1], map.getOrDefault(clothes[i][1], 0) + 1);
         }
         
-        int sum = 0;
-        int mul = 1;
-        for (String s : map.keySet()) {
-            mul *= (map.get(s) + 1);
+        int totalCombination = 1;
+        for (Integer num : map.values()) {
+            totalCombination *= (num + 1);
         }
-        
-        return mul - 1;
+    
+        return totalCombination - 1;
     }
 }
