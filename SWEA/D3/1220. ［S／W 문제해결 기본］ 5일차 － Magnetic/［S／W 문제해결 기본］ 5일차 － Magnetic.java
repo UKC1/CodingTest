@@ -20,19 +20,15 @@ public class Solution {
 
 			int cnt = 0;
 			for (int col = 0; col < 100; col++) {
-				Stack<Integer> stack = new Stack<>();
+				int currentState = 0;
 				for (int row = 0; row < 100; row++) {
 					if (arr[row][col] == 1) {
-						if (stack.isEmpty()) {
-							stack.push(1);
-						} else {
-							if (stack.peek() == 1) {
-								stack.push(stack.pop());
-							}
-						}
+						if (currentState == 0) {
+							currentState = 1;
+						} 
 					} else if (arr[row][col] == 2) {
-						if (!stack.isEmpty() && stack.peek() == 1) {
-							stack.pop();
+						if (currentState == 1) {
+							currentState = 0;
 							cnt++;
 						}
 					}
