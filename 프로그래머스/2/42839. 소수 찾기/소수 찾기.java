@@ -2,40 +2,55 @@ import java.util.*;
 
 class Solution {
     public int solution(String numbers) {
-        char[] arr = numbers.toCharArray();
-        boolean[] visited = new boolean[arr.length];
+        // 숫자 조합을 저장할 Set
         Set<Integer> set = new HashSet<>();
-        dfs("", arr, visited, set);
+        // 주어진 숫자를 char 배열로 변환
+        char[] arr = numbers.toCharArray();
+        // 방문 여부를 확인할 배열
+        boolean[] visited = new boolean[arr.length];
+        
+        // 모든 조합 생성
+        generateCombinations(arr, visited, set, new StringBuilder());
+        
+        // 생성된 조합 중 최대값 찾기
+        int maxNum = Collections.max(set);
+        // 에라토스테네스의 체를 사용하여 소수 판별
+        boolean[] isPrime = sieveOfEratosthenes(maxNum);
+        
+        // 소수 개수 카운트
         int cnt = 0;
         for (int num : set) {
-            if (isPrime(num)) cnt++; 
+            if (isPrime[num]) cnt++;
         }
         return cnt;
     }
-    // 완전 탐색을 위한 메서드
-    public void dfs(String current, char[] arr, boolean[] visited, Set<Integer> set) {
-        if (!current.equals("")) {
-            set.add(Integer.parseInt(current));    
+
+    private void generateCombinations(char[] arr, boolean[] visited, Set<Integer> set, StringBuilder current) {
+        if (current.length() > 0) {
+            set.add(Integer.parseInt(current.toString()));
         }
-        for (int i = 0; i < arr.length; i++){ 
+        for (int i = 0; i < arr.length; i++) {
             if (!visited[i]) {
                 visited[i] = true;
-                dfs(current + arr[i], arr, visited, set);
+                current.append(arr[i]);
+                generateCombinations(arr, visited, set, current);
+                current.deleteCharAt(current.length() - 1);
                 visited[i] = false;
             }
         }
     }
-    
-    // 소수 찾기 메서드
-    public boolean isPrime(int n) {
-        if (n < 2) return false;
-        if (n == 2 || n == 3) return true;
-        if (n % 2 == 0 || n % 3 == 0) return false;
-        // 6k + 1, 6k + 5 (6k, 6k + 2, 6k + 3, 6k + 4 형태는 앞의 2, 3배수로 처리됨)
-        // 6k + 5, 6k + 7만 체크
-        for (int i = 5; i * i <= n; i+=6) {
-            if (n % i == 0 || n % (i + 2) == 0) return false;
+
+    private boolean[] sieveOfEratosthenes(int maxNum) {
+        boolean[] isPrime = new boolean[maxNum + 1];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = isPrime[1] = false;
+        for (int i = 2; i * i <= maxNum; i++) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= maxNum; j += i) {
+                    isPrime[j] = false;
+                }
+            }
         }
-        return true;
+        return isPrime;
     }
 }
