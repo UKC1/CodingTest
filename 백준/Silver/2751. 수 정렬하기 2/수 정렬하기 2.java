@@ -11,9 +11,12 @@ public class Main {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(br.readLine());
         }
+
         Arrays.sort(arr);
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < N; i++) {
-            System.out.println(arr[i]);
+            sb.append(arr[i]).append('\n');
         }
+        System.out.print(sb);
     }
 }
