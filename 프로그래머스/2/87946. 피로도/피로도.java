@@ -1,20 +1,24 @@
+import java.util.*;
+
 class Solution {
     public int solution(int k, int[][] dungeons) {
-        int answer = dfs(k, 0, new boolean[dungeons.length], dungeons);
-        return answer;
+        return dfs(dungeons, new boolean[dungeons.length], k, 0);
     }
     
-    public int dfs(int k, int maxCount, boolean[] visited, int[][] dungeons) {
-        int cnt = maxCount;
+    // 최대 피로도 반환하는 DFS 구현
+    public int dfs(int[][] dungeons, boolean[] visited, int remainFatigue, int maxDungeonCnt) {
+        int maxCnt = maxDungeonCnt;
+        if (remainFatigue <= 0) {
+            return maxCnt;
+        }
+        
         for (int i = 0; i < visited.length; i++) {
-            int needFatigue = dungeons[i][0];
-            int consumeFatigue = dungeons[i][1];
-            if (!visited[i] && k >= needFatigue) {
+            if (!visited[i] && remainFatigue >= dungeons[i][0]) {
                 visited[i] = true;
-                cnt = Math.max(cnt, dfs(k - consumeFatigue, maxCount + 1, visited, dungeons));
+                maxCnt = Math.max(maxCnt, dfs(dungeons, visited, remainFatigue - dungeons[i][1], maxDungeonCnt + 1));
                 visited[i] = false;
             }
         }
-        return cnt;
+        return maxCnt;
     }
 }
