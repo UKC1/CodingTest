@@ -8,25 +8,31 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String str;
 		StringBuilder sb = new StringBuilder();
+		int max = 123456 * 2;
+		boolean[] isPrime = new boolean[max + 1];
+		// 에라토스테네스의 체 초기화
+		for (int i = 2; i <= max; i++) {
+			isPrime[i] = true;
+		}
+		
+		// 에라토스테네스의 체 알고리즘
+		for (int i = 2; i * i <= max; i++) {
+			if (isPrime[i]) {
+				for (int j = i * i; j <= max; j += i) {
+					isPrime[j] = false;
+				}
+			}
+		}
+		
 		while((str = br.readLine()) != null) {
 			int N = Integer.parseInt(str);
 			if (N == 0) break;
 			int cnt = 0;
 			for (int num = N + 1; num <= 2 * N; num++) {
-				if (isPrime(num)) cnt++;
+				if (isPrime[num]) cnt++;
 			}
 			sb.append(cnt).append("\n");
 		}
 		System.out.print(sb);
-	}
-
-	public static boolean isPrime(int num) {
-		if (num < 2) return false;
-		if (num == 2 || num == 3) return true;
-		if (num % 2 == 0 || num % 3 == 0) return false;
-		for (int i = 5; i * i <= num; i++) {
-			if (num % i == 0 || num % (i + 2) == 0) return false;
-		}
-		return true;
 	}
 }
