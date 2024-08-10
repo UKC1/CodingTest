@@ -8,42 +8,38 @@ public class Solution {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		int T = Integer.parseInt(st.nextToken());
+		int[] dx = {0, 1, 0, -1};
+		int[] dy = {1, 0, -1, 0};
 		for (int test_case = 1; test_case <= T; test_case++) {
 			int N = Integer.parseInt(br.readLine());
-
-			int[] dx = {0, 1, 0, -1};
-			int[] dy = {1, 0, -1, 0};
-			int currentX = 0, currentY = 0;
-			int[][] map = new int[N][N];
+			int[][] snailArr = new int[N][N];
 			int cnt = 1;
 			int row = 0;
 			int col = 0;
-			int dirCnt = 0;
+			int currentDir = 0;
 			while(cnt <= N * N) {
-				map[row][col] = cnt;
-				int nRow = row + dx[currentX];
-				int nCol = col + dy[currentY];
-				if (nRow >= 0 && nRow < N && nCol >= 0 && nCol < N && map[nRow][nCol] == 0) {
-					row = nRow;
-					col = nCol;
-					cnt++;
-					dirCnt = 0;
+				snailArr[row][col] = cnt++;
+				int nextRow = row + dx[currentDir];
+				int nextCol = col + dy[currentDir];
+				if (nextRow >= 0 && nextRow < N && nextCol >= 0 && nextCol < N && snailArr[nextRow][nextCol] == 0) {
+					row = nextRow;
+					col = nextCol;
 				} else {
-					currentX = (currentX + 1) % 4;
-					currentY = (currentY + 1) % 4;
-					dirCnt++;
-					if (dirCnt > 1) break;
+					currentDir = (currentDir + 1) % 4;
+					row = row + dx[currentDir];
+					col = col + dy[currentDir];
 				}
 			}
-
-			System.out.println("#" + test_case);
-			for (int i = 0; i < map.length; i++) {
-				for (int j = 0; j < map[i].length; j++) {
-					System.out.print(map[i][j] + " ");
+			sb.append('#').append(test_case).append('\n');
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					sb.append(snailArr[i][j]).append(' ');
 				}
-				System.out.println();
+				sb.append('\n');
 			}
 		}
+		System.out.print(sb);
 	}
 }
