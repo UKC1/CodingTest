@@ -15,10 +15,6 @@ public class Main {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		Arrays.sort(arr);
-		if (arr.length == 1) {
-			System.out.print(arr[0] * arr[0]);
-		} else {
-			System.out.print(arr[0] * arr[arr.length - 1]);
-		}
+		System.out.print(arr[0] * arr[arr.length - 1]);
 	}
 }
