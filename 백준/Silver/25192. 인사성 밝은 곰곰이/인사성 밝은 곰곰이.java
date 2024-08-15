@@ -18,7 +18,7 @@ public class Main {
 				set.add(str);
 			} else {
 				cnt += set.size();
-				set = new HashSet<>();
+				set.clear();
 			}
 		}
 		cnt += set.size();
