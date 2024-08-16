@@ -1,65 +1,58 @@
 import java.util.*;
+
 class Solution {
     public int solution(int n, int[][] wires) {
-        int answer = -1;
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= n; i++) {
-            graph.add(new ArrayList<>());
-        }
+        int minDiff = Integer.MAX_VALUE;
+        int[][] graph = new int[n + 1][n + 1];
+        
+        // 그래프 초기화
         for (int i = 0; i < wires.length; i++) {
             int start = wires[i][0];
             int end = wires[i][1];
-            graph.get(start).add(end); 
-            graph.get(end).add(start);
+            graph[start][end] = 1;
+            graph[end][start] = 1;
         }
         
-        int minDiff = Integer.MAX_VALUE;
+        // 간선을 하나씩 제거하며 최소 차이 계산
         for (int i = 0; i < wires.length; i++) {
             int start = wires[i][0];
             int end = wires[i][1];
-            remove(graph.get(start), end);
-            remove(graph.get(end), start);
-            // graph.get(start).remove(end);
-            // graph.get(end).remove(start);
-            minDiff = Math.min(minDiff, bfs(graph, start, end));
-            graph.get(start).add(end); 
-            graph.get(end).add(start);
+            
+            // 간선 제거
+            graph[start][end] = 0;
+            graph[end][start] = 0;
+            
+            // BFS를 사용하여 각 컴포넌트의 노드 개수를 계산
+            int part1 = bfs(graph, start, n);
+            int part2 = n - part1;
+            minDiff = Math.min(minDiff, Math.abs(part1 - part2));
+            
+            // 간선 복구
+            graph[start][end] = 1;
+            graph[end][start] = 1;
         }
-        return minDiff - 1;
-    }
-    void remove(List<Integer> list, int removeValue) {
-        for (int i = 0; i < list.size(); i++) {
-            if(list.get(i) == removeValue) {
-                list.remove(i);
-                break;
-            }
-        }
+        
+        return minDiff;
     }
     
-    int bfs(List<List<Integer>> graph, int start, int end) {
+    private int bfs(int[][] graph, int start, int n) {
+        boolean[] visited = new boolean[n + 1];
         Queue<Integer> queue = new LinkedList<>();
-        boolean[] visited = new boolean[graph.size()];
-        if (graph.get(start).size() > graph.get(end).size()) {
-            queue.offer(end);
-            visited[end] = true;
-        } else {
-            queue.offer(start);
-            visited[start] = true;
-        }
-        int totalCnt = 0;
-        while(!queue.isEmpty()) {
-            int cnt = 1;
-            int V = queue.poll();
-            visited[V] = true;
-            List<Integer> list = graph.get(V);
-            for (int i = 0; i < list.size(); i++) {
-                if (!visited[list.get(i)]) {
-                    queue.offer(list.get(i));
-                    cnt++;
+        queue.offer(start);
+        visited[start] = true;
+        int count = 1;
+        
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            for (int i = 1; i <= n; i++) {
+                if (graph[node][i] == 1 && !visited[i]) {
+                    visited[i] = true;
+                    queue.offer(i);
+                    count++;
                 }
             }
-            totalCnt += cnt;
         }
-        return (int)Math.abs(graph.size() - 1 - totalCnt);
+        
+        return count;
     }
 }
