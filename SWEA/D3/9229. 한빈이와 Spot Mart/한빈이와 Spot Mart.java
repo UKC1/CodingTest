@@ -1,12 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
-     public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
         StringTokenizer st;
@@ -21,18 +20,26 @@ public class Solution {
                 weights[i] = Integer.parseInt(st.nextToken());
             }
 
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-            for (int i = 0; i < weights.length; i++) {
-                for (int j = i + 1; j < weights.length; j++) {
-                    int weight = weights[i] + weights[j];
-                    if (weight <= weightLimit) {
-                        pq.offer(weight);
-                    }
+            // 배열 정렬
+            Arrays.sort(weights);
+
+            int maxWeight = -1;
+            int left = 0;
+            int right = N - 1;
+
+            while (left < right) {
+                int weight = weights[left] + weights[right];
+                
+                if (weight <= weightLimit) {
+                    maxWeight = Math.max(maxWeight, weight);
+                    left++; // 더 큰 합을 찾기 위해 왼쪽 포인터를 증가시킴
+                } else {
+                    right--; // 제한을 넘지 않도록 하기 위해 오른쪽 포인터를 감소시킴
                 }
             }
-            sb.append("#").append(test_case).append(" ").append(pq.isEmpty() ? -1 : pq.poll()).append("\n");
+
+            sb.append("#").append(test_case).append(" ").append(maxWeight).append("\n");
         }
         System.out.print(sb);
     }
-
 }
