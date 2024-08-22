@@ -14,10 +14,7 @@ public class Solution {
             int D = Integer.parseInt(st.nextToken());
             int L = Integer.parseInt(st.nextToken());
             int N = Integer.parseInt(st.nextToken());
-            long totalDamage = 0;
-            for (int i = 0; i < N; i++) {
-                totalDamage +=  D + i * L * D / 100;
-            }
+            long totalDamage = (long)(N * D / 200.0 * (200 + L * (N - 1)));
             sb.append("#").append(test_case).append(" ").append(totalDamage).append("\n");
         }
 
