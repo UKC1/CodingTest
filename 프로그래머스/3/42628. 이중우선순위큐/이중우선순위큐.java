@@ -13,11 +13,11 @@ class Solution {
                 if (num == 1) {
                     if (maxPQ.isEmpty()) continue;
                     int maxNum = maxPQ.poll();
-                    minPQ.remove(Integer.valueOf(maxNum));
+                    minPQ.remove(maxNum);
                 } else if (num == -1) {
                     if (minPQ.isEmpty()) continue;
                     int minNum = minPQ.poll();
-                    maxPQ.remove(Integer.valueOf(minNum));
+                    maxPQ.remove(minNum);
                 }
             }
         }
