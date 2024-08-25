@@ -7,22 +7,27 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
 
-        int cnt = 0;
-        loop: for (int i = 1; i <= N; i++) {
-            for (int j = 1; j < i; j++) {
-                cnt++;
-                if (cnt == N) {
-                    if (i % 2 == 0) {
-                        System.out.print((i - j) + "/" + j + " ");
-                    } else {
-                        System.out.print(j + "/" + (i - j) + " ");
-                    }
-                    break loop;
-                }
-            }
+        int diagonal = 1; // 현재 대각선
+        int sum = 0; // 대각선의 합을 추적
+
+        // N번째 요소가 위치한 대각선을 찾음
+        while (sum < N) {
+            sum += diagonal;
+            diagonal++;
         }
 
-        if (N == 1) System.out.print("1/1");
-        else if (N == 2) System.out.print("1/2");
+        diagonal--;  // while문이 한 번 더 실행되므로 대각선을 1 감소시킴
+        int offset = N - (sum - diagonal);  // 해당 대각선 내에서 N의 위치
+
+        int numerator, denominator;
+        if (diagonal % 2 == 0) {  // 대각선이 짝수일 경우
+            numerator = offset;
+            denominator = diagonal + 1 - offset;
+        } else {  // 대각선이 홀수일 경우
+            numerator = diagonal + 1 - offset;
+            denominator = offset;
+        }
+
+        System.out.println(numerator + "/" + denominator);
     }
 }
