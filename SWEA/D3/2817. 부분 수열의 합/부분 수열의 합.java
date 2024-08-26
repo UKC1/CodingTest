@@ -22,20 +22,15 @@ public class Solution {
 
             cnt = 0;
             for (int i = 1; i <= N; i++) {
-                combination(numbers, new int[i], K, 0, 0);
+                combination(numbers, i, 0, K, 0, 0);
             }
             sb.append("#").append(test_case).append(" ").append(cnt).append("\n");
         }
         System.out.print(sb);
     }
 
-    static void combination(int[] numbers, int[] newNumbers, int target, int idx, int start) {
-        if (idx == newNumbers.length) {
-            int sum = 0;
-            for (int i = 0; i < newNumbers.length; i++) {
-                sum += newNumbers[i];
-            }
-
+    static void combination(int[] numbers, int R, int sum, int target, int idx, int start) {
+        if (idx == R) {
             if (sum == target) {
                 cnt++;
             }
@@ -43,8 +38,7 @@ public class Solution {
         }
 
         for (int i = start; i < numbers.length; i++) {
-            newNumbers[idx] = numbers[i];
-            combination(numbers, newNumbers, target, idx + 1, i + 1);
+            combination(numbers, R, sum + numbers[i], target, idx + 1, i + 1);
         }
     }
 }
