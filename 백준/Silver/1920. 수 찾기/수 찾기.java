@@ -22,25 +22,9 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < M; i++) {
             int num = Integer.parseInt(st.nextToken());
-            sb.append(canFind(arr, num) ? 1 : 0).append("\n");
+            // Arrays.binarySearch를 활용한 이분탐색
+            sb.append(Arrays.binarySearch(arr, num) >= 0 ? 1 : 0).append("\n");
         }
         System.out.print(sb);
-    }
-
-    static boolean canFind(int[] arr, int target) {
-        int left = 0, right = arr.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (arr[mid] == target) {
-                return true;
-            }
-
-            if (arr[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        return false;
     }
 }
