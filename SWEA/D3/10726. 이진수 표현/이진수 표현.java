@@ -4,27 +4,28 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-     public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
         StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
         int T = Integer.parseInt(br.readLine());
         for (int test_case = 1; test_case <= T; test_case++) {
             st = new StringTokenizer(br.readLine());
             int N = Integer.parseInt(st.nextToken());
             int M = Integer.parseInt(st.nextToken());
-
             String binaryM = Integer.toBinaryString(M);
-            for (int i = binaryM.length() - 1; i >= 0; i--) {
-                if (N > 0 && binaryM.charAt(i) == '1') {
-                    N--;
-                } else {
+            boolean isTrue = true;
+            while(N > 0) {
+                int r = M % 2;
+                if (r != 1) {
+                    isTrue = false;
                     break;
                 }
+                M /= 2;
+                N--;
             }
-            sb.append("#").append(test_case).append(" ").append(N == 0 ? "ON" : "OFF").append("\n");
+            sb.append("#").append(test_case).append(" ").append(isTrue ? "ON" : "OFF").append('\n');
         }
         System.out.print(sb);
     }
-
 }
