@@ -39,6 +39,7 @@ public class Solution {
 
                     if (isWinner) {
                         totalMoney += map.get(winner);
+                        break;
                     }
                 }
             }
