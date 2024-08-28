@@ -3,29 +3,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    static int[] dp;
+    static int[] dp = new int[11];
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-        int N = Integer.parseInt(br.readLine());
-        dp = new int[11];
+
+        // dp 배열 미리 계산
         dp[1] = 1;
         dp[2] = 2;
         dp[3] = 4;
+        for (int i = 4; i <= 10; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+        }
+
+        int N = Integer.parseInt(br.readLine());  // 테스트 케이스 수
         for (int i = 0; i < N; i++) {
             int num = Integer.parseInt(br.readLine());
-            if (num > 3) {
-                for (int j = 4; j <= num; j++) {
-                    dp[j] = dp[j - 1] + dp[j - 2] + dp[j - 3];
-                }
-                sb.append(dp[num]);
-            } else {
-                sb.append(dp[num]);
-            }
-            sb.append("\n");
+            sb.append(dp[num]).append("\n");
         }
+
         System.out.print(sb);
     }
-
-
 }
