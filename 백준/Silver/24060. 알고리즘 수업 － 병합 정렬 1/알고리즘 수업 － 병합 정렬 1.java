@@ -7,6 +7,8 @@ public class Main {
     static int cnt = 0;
     static int K;
     static int num;
+    static boolean found = false; // 추가: K번째 요소를 찾았는지 여부를 추적
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,7 +24,7 @@ public class Main {
     }
 
     static void mergeSort(int[] arr, int left, int right) {
-        if (left < right) {
+        if (left < right && !found) { // 최적화: 요소를 찾은 경우 더 이상 재귀 호출을 하지 않음
             int mid = (left + right) / 2;
             mergeSort(arr, left, mid);
             mergeSort(arr, mid + 1, right);
@@ -51,14 +53,15 @@ public class Main {
             if (L[i] <= R[j]) {
                 arr[k] = L[i];
                 i++;
-                cnt++;
             } else {
                 arr[k] = R[j];
                 j++;
-                cnt++;
             }
+            cnt++;
             if (cnt == K) {
                 num = arr[k];
+                found = true; // K번째 요소를 찾았음을 표시
+                return; // 최적화: K번째 요소를 찾으면 바로 리턴
             }
             k++;
         }
@@ -68,6 +71,8 @@ public class Main {
             cnt++;
             if (cnt == K) {
                 num = arr[k];
+                found = true; // K번째 요소를 찾았음을 표시
+                return; // 최적화: K번째 요소를 찾으면 바로 리턴
             }
             i++;
             k++;
@@ -78,6 +83,8 @@ public class Main {
             cnt++;
             if (cnt == K) {
                 num = arr[k];
+                found = true; // K번째 요소를 찾았음을 표시
+                return; // 최적화: K번째 요소를 찾으면 바로 리턴
             }
             j++;
             k++;
