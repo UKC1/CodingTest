@@ -12,8 +12,9 @@ class Solution {
 
     public int solution(int[][] jobs) {
         // 작업을 도착 시간 기준으로 정렬
-        Arrays.sort(jobs, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(jobs, (j1, j2) -> Integer.compare(j1[0], j2[0]));
         
+        // 작업이 짧은 애를 넣자
         PriorityQueue<Process> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.length));
         int time = 0;
         int totalProcessTime = 0;
