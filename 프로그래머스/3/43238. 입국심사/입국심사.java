@@ -1,31 +1,26 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
     public long solution(int n, int[] times) {
         Arrays.sort(times);
-        
         long low = 1;
-        long high = (long) times[0] * n;
-        long answer = high;
-
+        long high = (long)times[0] * n;
+        long answer = 0;
         while (low <= high) {
-            long mid = (low + high) / 2;
-            long peopleProcessed = 0;
-
+            long mid = low + (high - low) / 2;
+            long peopleCnt = 0;
             for (int time : times) {
-		            // 해당 시간에 끝난 사람들의 수
-                peopleProcessed += mid / time;
-                if (peopleProcessed >= n) break;  // 이미 필요한 사람 수를 채웠으면 더 이상 계산할 필요 없음
+                peopleCnt += mid / time;
+                if (peopleCnt >= n) break;
             }
-
-            if (peopleProcessed >= n) {
-                answer = mid;  // 현재 mid 시간이 가능한 경우, 더 짧은 시간 시도
+            
+            if (peopleCnt >= n) {
+                answer = mid;
                 high = mid - 1;
             } else {
-                low = mid + 1;  // mid 시간이 부족한 경우, 더 긴 시간 시도
+                low = mid + 1;
             }
         }
-
         return answer;
     }
 }
