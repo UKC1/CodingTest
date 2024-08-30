@@ -1,24 +1,23 @@
 import java.util.*;
-
 class Solution {
     public long solution(int n, int[] times) {
         Arrays.sort(times);
-        long low = 1;
-        long high = (long)times[0] * n;
-        long answer = 0;
-        while (low <= high) {
-            long mid = low + (high - low) / 2;
-            long peopleCnt = 0;
+        long left = 0;
+        long right = (long)times[0] * n;
+        long answer = right;
+        while(left <= right) {
+            long mid = left + (right - left) / 2;
+            long personCnt = 0;
             for (int time : times) {
-                peopleCnt += mid / time;
-                if (peopleCnt >= n) break;
+                personCnt += mid / time;
+                if (personCnt >= n) break;
             }
             
-            if (peopleCnt >= n) {
+            if (personCnt >= n) {
                 answer = mid;
-                high = mid - 1;
+                right = mid - 1;
             } else {
-                low = mid + 1;
+                left = mid + 1;
             }
         }
         return answer;
