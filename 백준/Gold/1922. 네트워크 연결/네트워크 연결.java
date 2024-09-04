@@ -1,13 +1,10 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static class Computer {
+    static class Computer implements Comparable<Computer> {
         int u;
         int v;
         int cost;
@@ -18,31 +15,30 @@ public class Main {
             this.cost = cost;
         }
 
-        public int getCost() {
-            return cost;
+        @Override
+        public int compareTo(Computer o) {
+            return cost - o.cost;
         }
     }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-        List<Computer> computers = new ArrayList<Computer>();
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
+        PriorityQueue<Computer> pq = new PriorityQueue<>();
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            computers.add(new Computer(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            pq.offer(new Computer(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
-        computers.sort(Comparator.comparingInt(Computer::getCost));
         UnionFind uf = new UnionFind(N + 1);
         int computerCnt = 0;
         int minCost = 0;
-        for (Computer computer : computers) {
-            if(uf.union(computer.u, computer.v)) {
+        while (!pq.isEmpty() && computerCnt < N) {
+            Computer computer = pq.poll();
+            if (uf.union(computer.u, computer.v)) {
                 computerCnt++;
-                minCost += computer.getCost();
-
-                if (computerCnt == N - 1) break;
+                minCost += computer.cost;
             }
         }
 
@@ -54,11 +50,13 @@ public class Main {
 
     static class UnionFind {
         static int[] parent;
-
+        static int[] rank;
         UnionFind(int n) {
             parent = new int[n];
+            rank = new int[n];
             for (int i = 0; i < n; i++) {
                 parent[i] = i;
+                rank[i] = 0;
             }
         }
 
@@ -73,8 +71,13 @@ public class Main {
             int rootX = find(x);
             int rootY = find(y);
 
-            if (rootX != rootY) {
+            if (rootX > rootY) {
                 parent[rootX] = rootY;
+                rank[rootY]++;
+                return true;
+            } else if (rootX < rootY) {
+                parent[rootY] = rootX;
+                rank[rootX]++;
                 return true;
             }
             return false;
