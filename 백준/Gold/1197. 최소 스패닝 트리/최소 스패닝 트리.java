@@ -1,14 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
-    static class Edge {
+    static class Edge implements Comparable<Edge> {
         int u;
         int v;
         int weight;
@@ -19,8 +16,9 @@ public class Main {
             this.weight = weight;
         }
 
-        public int getWeight() {
-            return weight;
+        @Override
+        public int compareTo(Edge o) {
+            return weight - o.weight;
         }
     }
     public static void main(String[] args) throws IOException {
@@ -29,23 +27,20 @@ public class Main {
         int V = Integer.parseInt(st.nextToken());
         int E = Integer.parseInt(st.nextToken());
 
-        List<Edge> graph = new ArrayList<>();
-
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
-            graph.add(new Edge(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            pq.offer(new Edge(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
-        graph.sort(Comparator.comparingInt(Edge::getWeight));
         UnionFind uf = new UnionFind(V + 1);
         int edgeCnt = 0;
         int minSum = 0;
-        for (Edge edge : graph) {
+        while(!pq.isEmpty() && edgeCnt < V) {
+            Edge edge = pq.poll();
             if (uf.union(edge.u, edge.v)) {
                 edgeCnt++;
-                minSum += edge.getWeight();
-
-                if (edgeCnt == V - 1) break;
+                minSum += edge.weight;
             }
         }
         System.out.print(minSum);
