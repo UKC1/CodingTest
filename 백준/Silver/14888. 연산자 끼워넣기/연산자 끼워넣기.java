@@ -1,64 +1,70 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
     static int minV;
     static int maxV;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         int N = Integer.parseInt(br.readLine());
-        st = new StringTokenizer(br.readLine());
-        int[] operators = new int[4];
+        
+        // 수열 입력
         int[] numbers = new int[N];
+        st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             numbers[i] = Integer.parseInt(st.nextToken());
         }
 
+        // 연산자 개수 입력
+        int[] operators = new int[4];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < 4; i++) {
             operators[i] = Integer.parseInt(st.nextToken());
         }
 
+        // 최댓값과 최솟값 초기화
         minV = Integer.MAX_VALUE;
         maxV = Integer.MIN_VALUE;
+
+        // DFS 탐색 시작
         dfs(operators, numbers, 1, numbers[0]);
+
+        // 결과 출력
         System.out.println(maxV);
         System.out.println(minV);
     }
 
+    // DFS로 모든 연산 탐색
     static void dfs(int[] operators, int[] numbers, int idx, int sum) {
         if (idx == numbers.length) {
-            if (sum < minV) minV = sum;
-            if (sum > maxV) maxV = sum;
+            // 최댓값, 최솟값 업데이트
+            minV = Math.min(minV, sum);
+            maxV = Math.max(maxV, sum);
             return;
         }
 
-        if (operators[0] > 0) {
-            operators[0]--;
-            dfs(operators, numbers, idx + 1, sum + numbers[idx]);
-            operators[0]++;
+        // 연산자 사용 및 다음 탐색
+        for (int i = 0; i < 4; i++) {
+            if (operators[i] > 0) {
+                operators[i]--;
+                dfs(operators, numbers, idx + 1, calculate(sum, numbers[idx], i));
+                operators[i]++;
+            }
         }
+    }
 
-        if (operators[1] > 0) {
-            operators[1]--;
-            dfs(operators, numbers, idx + 1, sum - numbers[idx]);
-            operators[1]++;
+    // 연산 처리 함수
+    static int calculate(int a, int b, int operator) {
+        switch (operator) {
+            case 0: return a + b; // 더하기
+            case 1: return a - b; // 빼기
+            case 2: return a * b; // 곱하기
+            case 3: return a / b; // 나누기
         }
-
-        if (operators[2] > 0) {
-            operators[2]--;
-            dfs(operators, numbers, idx + 1, sum * numbers[idx]);
-            operators[2]++;
-        }
-
-        if (operators[3] > 0) {
-            operators[3]--;
-            dfs(operators, numbers, idx + 1, sum / numbers[idx]);
-            operators[3]++;
-        }
+        return 0; // 기본 리턴
     }
 }
