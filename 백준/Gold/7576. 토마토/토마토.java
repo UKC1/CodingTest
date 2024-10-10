@@ -16,7 +16,6 @@ public class Main {
         Queue<int[]> queue = new ArrayDeque<>();
         int M = Integer.parseInt(st.nextToken());
         int N = Integer.parseInt(st.nextToken());
-        isCompleted = true;
         minDays = 1;
         int[][] tomatoes = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -25,8 +24,6 @@ public class Main {
                 tomatoes[i][j] = Integer.parseInt(st.nextToken());
                 if (tomatoes[i][j] == 1) {
                     queue.offer(new int[]{i, j});
-                } else if (tomatoes[i][j] == 0) {
-                    isCompleted = false;
                 }
             }
         }
@@ -44,14 +41,10 @@ public class Main {
                 for (int i = 0; i < 4; i++) {
                     int nx = x + dx[i];
                     int ny = y + dy[i];
-                    if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny]) {
-                        if (tomatoes[nx][ny] == 1 || tomatoes[nx][ny] == -1) {
-                            continue;
-                        } else if (tomatoes[nx][ny] == 0) {
-                            tomatoes[nx][ny] = 1;
-                            queue.offer(new int[]{nx, ny});
-                            isChanged = true;
-                        }
+                    if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny] && tomatoes[nx][ny] == 0) {
+                        tomatoes[nx][ny] = 1;
+                        queue.offer(new int[]{nx, ny});
+                        isChanged = true;
                     }
                 }
             }
@@ -60,11 +53,6 @@ public class Main {
             }
         }
 
-        // 1이면 사방 탐색으로 익음 최소 1개는 보장
-        // 0이면 익지 않은 토마토
-        // -1이면 토마토가 없음
-        // 토마토가 다 익지 못하는 공간이면 -1
-        // 초기에 0이 없으면
         isCompleted = check(tomatoes);
         System.out.println(isCompleted ? minDays : -1);
     }
