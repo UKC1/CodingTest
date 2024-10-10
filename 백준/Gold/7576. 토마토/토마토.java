@@ -16,7 +16,6 @@ public class Main {
         Queue<int[]> queue = new ArrayDeque<>();
         int M = Integer.parseInt(st.nextToken());
         int N = Integer.parseInt(st.nextToken());
-        minDays = 1;
         int[][] tomatoes = new int[N][M];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
