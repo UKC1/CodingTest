@@ -33,7 +33,7 @@ public class Main {
             }
 
             if (nextPos == -1) {
-                int distSum = 0;
+                long distSum = 0;
                 for (int i = currentPos; i < N - 1; i++) {
                     distSum += dist[i];
                 }
@@ -41,7 +41,7 @@ public class Main {
                 break;
             }
 
-            int distSum = 0;
+            long distSum = 0;
             for (int i = currentPos; i < nextPos; i++) {
                 distSum += dist[i];
             }
