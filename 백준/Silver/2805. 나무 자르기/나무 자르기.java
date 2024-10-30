@@ -13,13 +13,14 @@ public class Main {
 
         long[] trees = new long[N];
         st = new StringTokenizer(br.readLine());
+        long maxNum = 0;
         for (int i = 0; i < N; i++) {
             trees[i] = Long.parseLong(st.nextToken());
+            if (maxNum < trees[i]) maxNum = trees[i];
         }
 
-        Arrays.sort(trees);
         long left = 0;
-        long right = trees[N - 1];
+        long right = maxNum;
         long maxHeight = 0;
 
         while (left <= right) {
