@@ -1,22 +1,15 @@
-WITH category AS(
-    SELECT category, SUM(code) code
-    FROM skillcodes
-    GROUP BY category
-)
-
-SELECT *
+SELECT A.GRADE ,A.ID ,A.EMAIL
 FROM(
-    SELECT
-        CASE
-            WHEN ((SELECT code FROM category WHERE category = 'Front End') & skill_code != 0)
-            AND ((SELECT code FROM skillcodes WHERE name = 'Python') & skill_code != 0) THEN 'A'
-            WHEN ((SELECT code FROM skillcodes WHERE name = 'C#') & skill_code != 0) THEN 'B'
-            WHEN ((SELECT code FROM category WHERE category = 'Front End') & skill_code != 0) THEN 'C'
-            ELSE NULL
-        END grade,
-        id,
-        email
-    FROM developers
-) a
-WHERE grade IS NOT NULL
-ORDER BY 1, 2
+SELECT A.ID
+,CASE WHEN SUM(CASE WHEN B.NAME='Python' THEN 10000
+WHEN B.CATEGORY = 'Front End'THEN 1 ELSE 0 END) >10000 THEN 'A'
+WHEN SUM(CASE WHEN B.NAME='C#' THEN 1 ELSE 0 END) >0 THEN 'B'
+WHEN SUM(CASE WHEN B.CATEGORY = 'Front End' THEN 1 ELSE 0 END) >0 THEN 'C'
+ELSE NULL END AS GRADE
+,MIN(A.EMAIL) AS EMAIL
+FROM DEVELOPERS A
+INNER JOIN SKILLCODES B ON A.SKILL_CODE & B.CODE = B.CODE
+GROUP BY A.ID
+) A
+WHERE A.GRADE IS NOT NULL
+ORDER BY A.GRADE,A.ID
