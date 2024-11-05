@@ -1,64 +1,74 @@
 import java.util.*;
 
 class Solution {
-    public int solution(int n, int s, int a, int b, int[][] fares) {
-        final int INF = Integer.MAX_VALUE; // 더 작은 값으로 설정
-        List<int[]>[] graph = new ArrayList[n + 1];
+    class Edge {
+        int vertex;
+        int weight;
         
-        for (int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
+        public Edge(int vertex, int weight) {
+            this.vertex = vertex;
+            this.weight = weight;
         }
         
-        // 그래프 생성
+        public int getWeight() {
+            return this.weight;
+        }
+        
+    }
+    public int solution(int n, int s, int a, int b, int[][] fares) {
+        final int INF = Integer.MAX_VALUE;
+        List<List<Edge>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList());
+        } 
+        
         for (int[] fare : fares) {
             int u = fare[0];
             int v = fare[1];
             int w = fare[2];
-            graph[u].add(new int[]{v, w});
-            graph[v].add(new int[]{u, w});
+            
+            graph.get(u).add(new Edge(v, w));
+            graph.get(v).add(new Edge(u, w));
         }
         
-        // 다익스트라 알고리즘을 사용하여 최단 거리 계산
-        int[] distFromS = dijkstra(s, graph, n, INF);
-        int[] distFromA = dijkstra(a, graph, n, INF);
-        int[] distFromB = dijkstra(b, graph, n, INF);
-        
+        int[] distFromS = dijkstra(s, graph, INF, n);
+        int[] distFromA = dijkstra(a, graph, INF, n);
+        int[] distFromB = dijkstra(b, graph, INF, n);
         int answer = INF;
-        
-        // 모든 노드 k를 거쳐 가는 경우의 최소 비용 계산
-        for (int k = 1; k <= n; k++) {
-            answer = Math.min(answer, distFromS[k] + distFromA[k] + distFromB[k]);
+        for (int i = 0; i <= n; i++) {
+            answer = Math.min(answer, distFromA[i]+distFromB[i]+distFromS[i]);
         }
-        
         return answer;
     }
     
-    private int[] dijkstra(int start, List<int[]>[] graph, int n, int INF) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+    private int[] dijkstra(int start, List<List<Edge>> graph, int INF, int n) {
+        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparing(Edge:: getWeight));
         int[] dist = new int[n + 1];
         Arrays.fill(dist, INF);
         dist[start] = 0;
-        pq.offer(new int[]{start, 0});
         
-        while (!pq.isEmpty()) {
-            int[] current = pq.poll();
-            int currentNode = current[0];
-            int currentDist = current[1];
+        pq.offer(new Edge(start, 0));
+        
+        while(!pq.isEmpty()) {
+            Edge current = pq.poll();
+            int currentNode = current.vertex;
+            int currentDist = current.weight;
             
-            if (currentDist > dist[currentNode]) continue;
+            if(currentDist < dist[currentNode]) {
+                continue;
+            }
             
-            for (int[] neighbor : graph[currentNode]) {
-                int nextNode = neighbor[0];
-                int weight = neighbor[1];
+            for (Edge neighbor : graph.get(currentNode)) {
+                int nextNode = neighbor.vertex;
+                int weight = neighbor.weight;
                 int distance = currentDist + weight;
-                
-                if (distance < dist[nextNode]) {
+                if(distance < dist[nextNode]) {
                     dist[nextNode] = distance;
-                    pq.offer(new int[]{nextNode, distance});
+                    pq.offer(new Edge(nextNode, distance));
+                    
                 }
             }
         }
-        
         return dist;
     }
 }
