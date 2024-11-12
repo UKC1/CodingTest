@@ -1,22 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int N;
-	static int[][] desserts;
-	static int[] dx = {1, 1, -1, -1}; // 우하 좌하 좌상 우상
-	static int[] dy = {1, -1, -1, 1};
-	static boolean[][] visited;
-	static Set<Integer> dessert;
-	static int maxCnt;
+    static int N;
+    static int[][] desserts;
+    static int[] dx = {1, 1, -1, -1};
+    static int[] dy = {1, -1, -1, 1};
+    static boolean[][] visited;
+    static boolean[] eaten;
+    static int maxCnt;
     public static void main(String[] args) throws IOException {
         BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -33,39 +27,40 @@ public class Solution {
                 }
             }
             maxCnt = -1;
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                	visited = new boolean[N][N];
-                	dessert = new HashSet<>();
-                	visited[i][j] = true;
-                	dessert.add(desserts[i][j]);
-                	dfs(1, i, j, i, j, 0);
+            eaten = new boolean[101];  
+            for (int i = 0; i < N - 1; i++) {
+                for (int j = 1; j < N - 1; j++) {
+                    visited = new boolean[N][N];
+                    visited[i][j] = true;
+                    eaten[desserts[i][j]] = true;
+                    dfs(1, i, j, i, j, 0);
+                    eaten[desserts[i][j]] = false;
                 }
             }
-
             sb.append('#').append(test_case).append(' ').append(maxCnt).append('\n');
         }
         System.out.print(sb);
     }
-
     private static void dfs(int cnt, int x, int y, int startX, int startY, int direction) {
-    	for (int i = direction; i < 4; i++) {
-    		int nx = x + dx[i];
-    		int ny = y + dy[i];
-    		if (nx >= 0 && nx < N && ny >= 0 && ny < N) {
-    			if(nx == startX && ny == startY && cnt > 2) {
-    				maxCnt = Math.max(maxCnt, cnt);
-    				return;
-    			}
-    			
-    			if (!visited[nx][ny] && !dessert.contains(desserts[nx][ny])) {
-    				visited[nx][ny] = true;
-    				dessert.add(desserts[nx][ny]);
-    				dfs(cnt + 1, nx, ny, startX, startY, i);
-    				visited[nx][ny] = false;
-    				dessert.remove(desserts[nx][ny]);
-    			}
-    		}
-    	}
+        for (int i = direction; i < direction + 2; i++) {
+            if (i >= 4) break;
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if (nx >= 0 && nx < N && ny >= 0 && ny < N) {
+                if (nx == startX && ny == startY && cnt >= 4) {
+                    maxCnt = Math.max(maxCnt, cnt);
+                    return;
+                }
+
+                int eatDessert = desserts[nx][ny];
+                if (!visited[nx][ny] && !eaten[eatDessert]) {
+                    visited[nx][ny] = true;
+                    eaten[eatDessert] = true; 
+                    dfs(cnt + 1, nx, ny, startX, startY, i);
+                    visited[nx][ny] = false;
+                    eaten[eatDessert] = false;
+                }
+            }
+        }
     }
 }
