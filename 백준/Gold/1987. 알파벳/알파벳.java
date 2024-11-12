@@ -31,6 +31,7 @@ public class Main {
         System.out.print(maxCnt);
     }
     static void dfs(int x, int y, boolean[] visited, int totalCnt) {
+        cnt = Math.max(cnt, totalCnt);
         for (int i = 0; i < 4; i++) {
             int nx = x + dx[i];
             int ny = y + dy[i];
@@ -38,9 +39,7 @@ public class Main {
                  visited[maps[nx][ny] - 'A'] = true;
                  dfs(nx, ny, visited, totalCnt + 1);
                  visited[maps[nx][ny] - 'A'] = false;
-            } else {
-                cnt = Math.max(cnt, totalCnt);
-            }
+            } 
         }
     }
 }
