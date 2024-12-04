@@ -32,14 +32,14 @@ public class Main {
         maxNum = Integer.MIN_VALUE;
 
         // DFS 시작
-        dfs(numbers, operators, 1, String.valueOf(numbers[0]));
+        dfs(numbers, operators, 1, new ArrayList<>(Collections.singletonList(numbers[0])));
 
         // 결과 출력
         System.out.println(maxNum);
         System.out.println(minNum);
     }
 
-    static void dfs(int[] numbers, int[] operators, int idx, String expression) {
+    static void dfs(int[] numbers, int[] operators, int idx, List<Object> expression) {
         // 모든 숫자를 사용한 경우
         if (idx == numbers.length) {
             int result = evaluate(expression);
@@ -51,110 +51,79 @@ public class Main {
         // 덧셈
         if (operators[0] > 0) {
             operators[0]--;
-            dfs(numbers, operators, idx + 1, expression + "+" + numbers[idx]);
+            List<Object> nextExpression = new ArrayList<>(expression);
+            nextExpression.add('+');
+            nextExpression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1, nextExpression);
             operators[0]++;
         }
 
         // 뺄셈
         if (operators[1] > 0) {
             operators[1]--;
-            dfs(numbers, operators, idx + 1, expression + "-" + numbers[idx]);
+            List<Object> nextExpression = new ArrayList<>(expression);
+            nextExpression.add('-');
+            nextExpression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1, nextExpression);
             operators[1]++;
         }
 
         // 곱셈
         if (operators[2] > 0) {
             operators[2]--;
-            dfs(numbers, operators, idx + 1, expression + "*" + numbers[idx]);
+            List<Object> nextExpression = new ArrayList<>(expression);
+            nextExpression.add('*');
+            nextExpression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1, nextExpression);
             operators[2]++;
         }
 
         // 나눗셈
         if (operators[3] > 0) {
             operators[3]--;
-            dfs(numbers, operators, idx + 1, expression + "/" + numbers[idx]);
+            List<Object> nextExpression = new ArrayList<>(expression);
+            nextExpression.add('/');
+            nextExpression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1, nextExpression);
             operators[3]++;
         }
     }
 
-    static int evaluate(String expression) {
-        // 중위 표기식을 후위 표기식으로 변환
-        String postfix = infixToPostfix(expression);
+    static int evaluate(List<Object> expression) {
+        // 1. 곱셈과 나눗셈 먼저 처리
+        List<Object> temp = new ArrayList<>();
+        int i = 0;
 
-        // 후위 표기식 계산
-        return evaluatePostfix(postfix);
-    }
-
-    static String infixToPostfix(String infix) {
-        StringBuilder postfix = new StringBuilder();
-        Stack<Character> stack = new Stack<>();
-        StringBuilder numberBuffer = new StringBuilder();
-
-        for (int i = 0; i < infix.length(); i++) {
-            char c = infix.charAt(i);
-
-            if (Character.isDigit(c)) {
-                numberBuffer.append(c);
+        while (i < expression.size()) {
+            if (expression.get(i).equals('*')) {
+                int a = (int) temp.remove(temp.size() - 1);
+                int b = (int) expression.get(++i);
+                temp.add(a * b);
+            } else if (expression.get(i).equals('/')) {
+                int a = (int) temp.remove(temp.size() - 1);
+                int b = (int) expression.get(++i);
+                temp.add(a < 0 ? -(-a / b) : a / b); // 음수 나눗셈 처리
             } else {
-                if (numberBuffer.length() > 0) {
-                    postfix.append(numberBuffer).append(" ");
-                    numberBuffer.setLength(0);
-                }
+                temp.add(expression.get(i));
+            }
+            i++;
+        }
 
-                while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c)) {
-                    postfix.append(stack.pop()).append(" ");
-                }
-                stack.push(c);
+        // 2. 덧셈과 뺄셈 처리
+        int result = (int) temp.get(0);
+        i = 1;
+
+        while (i < temp.size()) {
+            char op = (char) temp.get(i++);
+            int b = (int) temp.get(i++);
+
+            if (op == '+') {
+                result += b;
+            } else if (op == '-') {
+                result -= b;
             }
         }
 
-        if (numberBuffer.length() > 0) {
-            postfix.append(numberBuffer).append(" ");
-        }
-
-        while (!stack.isEmpty()) {
-            postfix.append(stack.pop()).append(" ");
-        }
-
-        return postfix.toString().trim();
-    }
-
-    static int precedence(char op) {
-        if (op == '+' || op == '-') return 1;
-        if (op == '*' || op == '/') return 2;
-        return 0;
-    }
-
-    static int evaluatePostfix(String postfix) {
-        Stack<Integer> stack = new Stack<>();
-        StringTokenizer st = new StringTokenizer(postfix);
-
-        while (st.hasMoreTokens()) {
-            String token = st.nextToken();
-
-            if (token.matches("-?\\d+")) {
-                stack.push(Integer.parseInt(token));
-            } else {
-                int b = stack.pop();
-                int a = stack.pop();
-
-                switch (token) {
-                    case "+":
-                        stack.push(a + b);
-                        break;
-                    case "-":
-                        stack.push(a - b);
-                        break;
-                    case "*":
-                        stack.push(a * b);
-                        break;
-                    case "/":
-                        stack.push(Math.floorDiv(a, b)); // 정수 나눗셈 처리
-                        break;
-                }
-            }
-        }
-
-        return stack.pop();
+        return result;
     }
 }
