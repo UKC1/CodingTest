@@ -6,6 +6,7 @@ import java.util.*;
 public class Main {
     static int minNum;
     static int maxNum;
+    static List<Object> expression = new ArrayList<>(); // 전역으로 사용할 리스트
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -31,18 +32,21 @@ public class Main {
         minNum = Integer.MAX_VALUE;
         maxNum = Integer.MIN_VALUE;
 
+        // 첫 번째 숫자 추가
+        expression.add(numbers[0]);
+
         // DFS 시작
-        dfs(numbers, operators, 1, new ArrayList<>(Collections.singletonList(numbers[0])));
+        dfs(numbers, operators, 1);
 
         // 결과 출력
         System.out.println(maxNum);
         System.out.println(minNum);
     }
 
-    static void dfs(int[] numbers, int[] operators, int idx, List<Object> expression) {
+    static void dfs(int[] numbers, int[] operators, int idx) {
         // 모든 숫자를 사용한 경우
         if (idx == numbers.length) {
-            int result = evaluate(expression);
+            int result = evaluate();
             minNum = Math.min(minNum, result);
             maxNum = Math.max(maxNum, result);
             return;
@@ -51,45 +55,49 @@ public class Main {
         // 덧셈
         if (operators[0] > 0) {
             operators[0]--;
-            List<Object> nextExpression = new ArrayList<>(expression);
-            nextExpression.add('+');
-            nextExpression.add(numbers[idx]);
-            dfs(numbers, operators, idx + 1, nextExpression);
+            expression.add('+');
+            expression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1);
+            expression.remove(expression.size() - 1); // 백트래킹
+            expression.remove(expression.size() - 1); // 백트래킹
             operators[0]++;
         }
 
         // 뺄셈
         if (operators[1] > 0) {
             operators[1]--;
-            List<Object> nextExpression = new ArrayList<>(expression);
-            nextExpression.add('-');
-            nextExpression.add(numbers[idx]);
-            dfs(numbers, operators, idx + 1, nextExpression);
+            expression.add('-');
+            expression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1);
+            expression.remove(expression.size() - 1); // 백트래킹
+            expression.remove(expression.size() - 1); // 백트래킹
             operators[1]++;
         }
 
         // 곱셈
         if (operators[2] > 0) {
             operators[2]--;
-            List<Object> nextExpression = new ArrayList<>(expression);
-            nextExpression.add('*');
-            nextExpression.add(numbers[idx]);
-            dfs(numbers, operators, idx + 1, nextExpression);
+            expression.add('*');
+            expression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1);
+            expression.remove(expression.size() - 1); // 백트래킹
+            expression.remove(expression.size() - 1); // 백트래킹
             operators[2]++;
         }
 
         // 나눗셈
         if (operators[3] > 0) {
             operators[3]--;
-            List<Object> nextExpression = new ArrayList<>(expression);
-            nextExpression.add('/');
-            nextExpression.add(numbers[idx]);
-            dfs(numbers, operators, idx + 1, nextExpression);
+            expression.add('/');
+            expression.add(numbers[idx]);
+            dfs(numbers, operators, idx + 1);
+            expression.remove(expression.size() - 1); // 백트래킹
+            expression.remove(expression.size() - 1); // 백트래킹
             operators[3]++;
         }
     }
 
-    static int evaluate(List<Object> expression) {
+    static int evaluate() {
         // 1. 곱셈과 나눗셈 먼저 처리
         List<Object> temp = new ArrayList<>();
         int i = 0;
