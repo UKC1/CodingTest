@@ -6,29 +6,25 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String str = br.readLine();
-        int len = str.length();
-        int num = Integer.parseInt(str);
-        int startNum = num - 9 * len;
-        boolean isTrue = false;
-        while (startNum < num) {
-            int original = startNum;
-            int cnt = len;
-            int sum = original;
-            while(cnt > 0) {
-                sum += original % 10;
-                original /= 10;
-                cnt--;
-            }
-
-            if (sum == num) {
-                isTrue = true;
+        int N = Integer.parseInt(str);
+        int minSelfNum = 0;
+        int start = N - str.length() * 9;
+        for (int num = start; num <= N; num++) {
+            int nextNum = selfNum(num);
+            if (nextNum == N) {
+                minSelfNum = num;
                 break;
             }
-            startNum++;
         }
+        System.out.print(minSelfNum);
+    }
 
-        System.out.println(isTrue ? startNum : 0);
-
-
+    static int selfNum(int num) {
+        int sum = num;
+        while (num > 0) {
+            sum += num % 10;
+            num /= 10;
+        }
+        return sum;
     }
 }
