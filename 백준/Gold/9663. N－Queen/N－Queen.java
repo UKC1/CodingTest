@@ -3,43 +3,40 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-	static int totalCount;
+    static int totalCount; // 총 퀸 배치 방법 수
 
-	public static void main(String[] args)throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N= Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+
         totalCount = 0;
 
-        boolean[] cols = new boolean[N];  
-        // 열 체크
-        boolean[] d1 = new boolean[2 * N - 1]; 
-        // 주대각선 체크
-        boolean[] d2 = new boolean[2 * N - 1]; // 부대각선 체크
+        // 비트마스킹 기반 DFS 탐색
+        dfs(0, N, 0, 0, 0);
 
-        dfs(0, N, cols, d1, d2);
-        System.out.print(totalCount);
-	}
+        // 결과 출력
+        System.out.println(totalCount);
+    }
 
-	static void dfs(int row, int N, boolean[] cols, boolean[] d1, boolean[] d2) {
-		if (row == N) {
-			totalCount++;
-			return;
-		}
+    static void dfs(int row, int N, int cols, int d1, int d2) {
+        // 모든 퀸을 배치한 경우
+        if (row == N) {
+            totalCount++;
+            return;
+        }
 
-		for (int col = 0; col < N; col++) {
-			int diag1= row - col + N - 1;
-			int diag2= row + col;
+        // 가능한 위치 계산
+        int availablePositions = (~(cols | d1 | d2)) & ((1 << N) - 1);
 
-			if (!cols[col] && !d1[diag1] && !d2[diag2]) {
-				// 퀸 배치
-				cols[col] = d1[diag1] = d2[diag2] = true;
+        while (availablePositions != 0) {
+            // 가장 오른쪽 비트를 선택
+            int position = availablePositions & -availablePositions;
 
-				// 다음 행으로 재귀 호출
-				dfs(row + 1, N, cols, d1, d2);
+            // 해당 위치에 퀸 배치
+            dfs(row + 1, N, cols | position, (d1 | position) << 1, (d2 | position) >> 1);
 
-				// 상태 복원
-				cols[col] = d1[diag1] = d2[diag2] = false;
-			}
-		}
-	}
+            // 상태 복원
+            availablePositions &= (availablePositions - 1);
+        }
+    }
 }
