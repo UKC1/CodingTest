@@ -12,7 +12,6 @@ public class Main {
     static int[][] copyMap;
     static List<Point> blankList;
     static List<Point> virusList;
-    static int wallsCnt;
     static int maxSafeZone;
     static int virusCnt;
 
@@ -34,7 +33,6 @@ public class Main {
         blankList = new ArrayList<>();
         virusList = new ArrayList<>();
         maxSafeZone = 0;
-        wallsCnt = 0;
         virusCnt = 0;
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -42,8 +40,6 @@ public class Main {
                 maps[i][j] = Integer.parseInt(st.nextToken());
                 if (maps[i][j] == 0) {
                     blankList.add(new Point(i, j));
-                } else if (maps[i][j] == 1) {
-                    wallsCnt++;
                 } else if (maps[i][j] == 2) {
                     virusList.add(new Point(i, j));
                 }
@@ -65,13 +61,13 @@ public class Main {
             // 벽 3개 세우자
             // 바이러스 퍼뜨리기 시작, 바이러스 개수 반환
             copyMap = mapCopy();
-            virusCnt = virusList.size();
+            virusCnt = 0;
             for (Point virus : virusList) {
                 spreadVirus(virus.x, virus.y);
             }
 
             // 안전지대 카운트
-            int safeCnt = N * M - virusCnt - wallsCnt - 3;
+            int safeCnt = blankList.size() - virusCnt - 3;
             if (safeCnt > maxSafeZone) maxSafeZone = safeCnt;
             return;
         }
