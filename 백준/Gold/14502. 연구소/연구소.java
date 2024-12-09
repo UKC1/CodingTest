@@ -1,93 +1,105 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static int N, M;
-    static int[] arr_x = {1,0,-1,0};
-    static int[] arr_y = {0,1,0,-1};
-    static int[][] Map;
-    static int[][] VirusMap;
-    static ArrayList<Info> VirusPos = new ArrayList<Info>();
-    static int ans = Integer.MIN_VALUE;
+    static int N;
+    static int M;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
+    static int[][] maps;
+    static int[][] copyMap;
+    static List<Point> blankList;
+    static List<Point> virusList;
+    static int wallsCnt;
+    static int maxSafeZone;
+    static int virusCnt;
+
+    static class Point {
+        int x;
+        int y;
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer stk = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(stk.nextToken());
-        M = Integer.parseInt(stk.nextToken());
-        Map = new int[N][M];
-        VirusMap = new int[N][M];
-        for(int i = 0; i < N; i++) {
-            stk = new StringTokenizer(br.readLine());
-            for(int j= 0; j < M; j++) {
-                Map[i][j] = Integer.parseInt(stk.nextToken());
-                if(Map[i][j] == 2) {
-                    VirusPos.add(new Info(i, j));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        maps = new int[N][M];
+        blankList = new ArrayList<>();
+        virusList = new ArrayList<>();
+        maxSafeZone = 0;
+        wallsCnt = 0;
+        virusCnt = 0;
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                maps[i][j] = Integer.parseInt(st.nextToken());
+                if (maps[i][j] == 0) {
+                    blankList.add(new Point(i, j));
+                } else if (maps[i][j] == 1) {
+                    wallsCnt++;
+                } else if (maps[i][j] == 2) {
+                    virusList.add(new Point(i, j));
                 }
             }
         }
-        DFS(0, 0);
-        sb.append(ans).append("\n");
-        bw.write(String.valueOf(sb));
-        bw.flush();
-        bw.close();
-        br.close();
-        return;
+
+        // 벽은 3개 세울 수 있음
+        combination(0, 0);
+        // 0 : 빈 칸
+        // 1 : 벽
+        // 2 : 바이러스
+        // 바이러스는 상하좌우로 퍼짐
+        // 안전 영역 크기의 최댓값을 구하라
+        System.out.print(maxSafeZone);
+
     }
-    private static void DFS(int depth, int x) {
-        if(depth == 3) {
-            int ret = 0;
-            for(int i = 0; i < N; i++) {
-                for(int j = 0; j < M; j++) {
-                    VirusMap[i][j] = Map[i][j];
-                }
+    static void combination(int index, int start) {
+        if (index == 3) {
+            // 벽 3개 세우자
+            // 바이러스 퍼뜨리기 시작, 바이러스 개수 반환
+            copyMap = mapCopy();
+            virusCnt = virusList.size();
+            for (Point virus : virusList) {
+                spreadVirus(virus.x, virus.y);
             }
-            for(int i = 0; i < VirusPos.size(); i++) {
-                Info pos = VirusPos.get(i);
-                SpreadVirus(pos.x, pos.y);
-            }
-            ret = CheckRemain();
-            if(ret > ans) ans = ret;
-        } else {
-            for(int i = x; i < N; i++) {
-                for(int j = 0; j < M; j++) {
-                    if(Map[i][j] == 0) {
-                        Map[i][j] = 1;
-                        DFS(depth + 1, i);
-                        Map[i][j] = 0;
-                    }
-                }
+
+            // 안전지대 카운트
+            int safeCnt = N * M - virusCnt - wallsCnt - 3;
+            if (safeCnt > maxSafeZone) maxSafeZone = safeCnt;
+            return;
+        }
+        for (int i = start; i < blankList.size(); i++) {
+            maps[blankList.get(i).x][blankList.get(i).y] = 1;
+            combination(index + 1, i + 1);
+            maps[blankList.get(i).x][blankList.get(i).y] = 0;
+        }
+
+    }
+    static int[][] mapCopy() {
+        int[][] copyMaps = new int[N][M];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                copyMaps[i][j] = maps[i][j];
             }
         }
+        return copyMaps;
     }
-    private static void SpreadVirus(int x, int y) {
-        for(int i = 0; i < 4; i++) {
-            int tmp_x = x + arr_x[i];
-            int tmp_y = y + arr_y[i];
-            if(tmp_x >= 0 && tmp_y >= 0 && tmp_x < N && tmp_y < M && VirusMap[tmp_x][tmp_y] == 0) {
-                VirusMap[tmp_x][tmp_y] = 2;
-                SpreadVirus(tmp_x, tmp_y);
+    static void spreadVirus(int x, int y) {
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if (nx >= 0 && ny >= 0 && nx < N && ny < M && copyMap[nx][ny] == 0) {
+                copyMap[nx][ny] = 2;
+                virusCnt++;
+                spreadVirus(nx, ny);
             }
         }
-    }
-    private static int CheckRemain() {
-        int result = 0;
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < M; j++) {
-                if(VirusMap[i][j] == 0) {
-                    result++;
-                }
-            }
-        }
-        return result;
-    }
-}
-class Info{
-    int x;
-    int y;
-    Info(int pos_x, int pos_y) {
-        this.x = pos_x;
-        this.y = pos_y;
     }
 }
