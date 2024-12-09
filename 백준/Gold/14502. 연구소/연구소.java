@@ -46,27 +46,18 @@ public class Main {
             }
         }
 
-        // 벽은 3개 세울 수 있음
         combination(0, 0);
-        // 0 : 빈 칸
-        // 1 : 벽
-        // 2 : 바이러스
-        // 바이러스는 상하좌우로 퍼짐
-        // 안전 영역 크기의 최댓값을 구하라
         System.out.print(maxSafeZone);
 
     }
     static void combination(int index, int start) {
         if (index == 3) {
-            // 벽 3개 세우자
-            // 바이러스 퍼뜨리기 시작, 바이러스 개수 반환
-            copyMap = mapCopy();
+            mapCopy();
             virusCnt = 0;
             for (Point virus : virusList) {
                 spreadVirus(virus.x, virus.y);
             }
 
-            // 안전지대 카운트
             int safeCnt = blankList.size() - virusCnt - 3;
             if (safeCnt > maxSafeZone) maxSafeZone = safeCnt;
             return;
@@ -78,14 +69,11 @@ public class Main {
         }
 
     }
-    static int[][] mapCopy() {
-        int[][] copyMaps = new int[N][M];
+    static void mapCopy() {
+        copyMap = new int[N][M];
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                copyMaps[i][j] = maps[i][j];
-            }
+            System.arraycopy(maps[i], 0, copyMap[i], 0, M);
         }
-        return copyMaps;
     }
     static void spreadVirus(int x, int y) {
         for (int i = 0; i < 4; i++) {
