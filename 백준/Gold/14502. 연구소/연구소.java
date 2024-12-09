@@ -1,107 +1,113 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.io.*;
 
 public class Main {
-    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringTokenizer st;
-    static int[][] map, mapClone;
-    static int N, M, maxNum= 0;
-    static int[] combList = new int[3];
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static ArrayList<Pos> safe = new ArrayList<Pos>();
-    static Deque<Pos> virus = new ArrayDeque<Pos>();
-    static int safeCnt = 0;
-    static boolean flag = false;
-    private static class Pos{
-        int x;
-        int y;
-
-        public Pos(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        st = new StringTokenizer(br.readLine());
+    static int N;
+    static int M;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
+    static int [][] maps;
+    static boolean[][] visited;
+    static List<int[]> blanks;
+    static List<int[]> virus;
+    static int wallsCnt;
+    static int maxSafeZone;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-
-        map = new int[N][M];
-        mapClone = new int[N][M];
-        int value;
-        for(int i=0; i<N; i++) {
+        maps = new int[N][M];
+        blanks = new ArrayList<>();
+        virus = new ArrayList<>();
+        maxSafeZone = 0;
+        wallsCnt = 0;
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<M; j++) {
-                value = Integer.parseInt(st.nextToken());
-                map[i][j] = value;
-                mapClone[i][j] = value;
-                if(map[i][j] == 0) {
-                    safe.add(new Pos(i, j));
+            for (int j = 0; j < M; j++) {
+                maps[i][j] = Integer.parseInt(st.nextToken());
+                if (maps[i][j] == 0) {
+                    blanks.add(new int[]{i, j});
+                } else if (maps[i][j] == 2) {
+                    virus.add(new int[]{i, j});
+                } else if (maps[i][j] == 1) {
+                    wallsCnt++;
                 }
             }
         }
-        combination(0, 0);
-        System.out.println(maxNum);
+
+        // 벽은 3개 세울 수 있음
+        combination(new int[3], 0, 0);
+        // 0 : 빈 칸
+        // 1 : 벽
+        // 2 : 바이러스
+        // 바이러스는 상하좌우로 퍼짐
+        // 안전 영역 크기의 최댓값을 구하라
+        System.out.print(maxSafeZone);
+
 
     }
-
-    private static void combination(int cnt, int start) {
-        if(cnt == 3) {
-            mapCopy();
-            for(int i: combList) {
-                map[safe.get(i).x][safe.get(i).y]= 1;
+    static void combination(int[] arr, int index, int start) {
+        if (index == 3) {
+            // 벽 3개 세우자
+            for (Integer idx : arr) {
+                int x = blanks.get(idx)[0];
+                int y = blanks.get(idx)[1];
+                maps[x][y] = 1;
             }
-            spreadVirus();
-            maxNum = Math.max(maxNum, cntZero());
+            // 바이러스 퍼뜨리기 시작, 바이러스 개수 반환
+            int virusCnt = bfs();
+
+            // 안전지대 카운트
+            int safeCnt = N * M - virusCnt - wallsCnt - 3;
+
+
+            if (safeCnt > maxSafeZone) maxSafeZone = safeCnt;
+
+
+            // 벽 3개 원래대로
+            for (Integer idx : arr) {
+                int x = blanks.get(idx)[0];
+                int y = blanks.get(idx)[1];
+                maps[x][y] = 0;
+            }
             return;
         }
-
-        for(int i= start; i< safe.size(); i++) {
-            combList[cnt] = i;
-            combination(cnt+1, i+1);
+        for (int i = start; i < blanks.size(); i++) {
+            arr[index] = i;
+            combination(arr, index + 1, i + 1);
         }
+
     }
 
-    private static void mapCopy() {
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<M; j++) {
-                map[i][j] = mapClone[i][j];
-                if(map[i][j] == 2) {
-                    virus.add(new Pos(i, j));
+    static int bfs() {
+        int virusCnt = virus.size();
+        visited = new boolean[N][M];
+        Queue<int[]> queue = new LinkedList<>();
+        // 초기화
+        for (int i = 0; i < virus.size(); i++) {
+            int x = virus.get(i)[0];
+            int y = virus.get(i)[1];
+            queue.offer(new int[]{x, y});
+            visited[x][y] = true;
+        }
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int x = curr[0];
+            int y = curr[1];
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny] && maps[nx][ny] == 0) {
+                    visited[nx][ny] = true;
+                    queue.offer(new int[]{nx, ny});
+                    virusCnt++;
                 }
             }
         }
-    }
-
-    private static void spreadVirus() {
-        int nx, ny;
-        Pos pos;
-        while(!virus.isEmpty()) {
-            pos = virus.poll();
-            for(int i=0; i<4; i++) {
-                nx = pos.x + dx[i];
-                ny = pos.y + dy[i];
-                if(!isRange(nx, ny) || map[nx][ny] > 0) continue;
-                map[nx][ny] = 2;
-                virus.add(new Pos(nx, ny));
-            }
-        }
-    }
-
-    private static boolean isRange(int x, int y) {
-        return x < 0 || x >= N || y < 0 || y >= M ? false : true;
-    }
-
-    private static int cntZero() {
-        int cnt =0;
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<M; j++) {
-                if(map[i][j] == 0)
-                    cnt++;
-            }
-        }
-        return cnt;
+        return virusCnt;
     }
 }
