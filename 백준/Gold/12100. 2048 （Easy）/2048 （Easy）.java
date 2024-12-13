@@ -74,16 +74,12 @@ public class Main {
             for (int row = N - 1; row >= 0; row--) {
                 int num = downMap[row][col];
                 if (num != 0) {
-                    if (stack.isEmpty()) {
-                        stack.push(num);
+                    if (!stack.isEmpty() && stack.peek() == num) {
+                        int mergedNum = stack.pop() * 2;
+                        stack.push(mergedNum);
+                        stack.push(0);
                     } else {
-                        if (stack.peek() == num) {
-                            int mergedNum = stack.pop() * 2;
-                            stack.push(mergedNum);
-                            stack.push(0);
-                        } else {
-                            stack.push(num);
-                        }
+                        stack.push(num);
                     }
                 }
                 downMap[row][col] = 0;
@@ -105,16 +101,12 @@ public class Main {
             for (int row = 0; row < N; row++) {
                 int num = upMap[row][col];
                 if (num != 0) {
-                    if (stack.isEmpty()) {
-                        stack.push(num);
+                    if (!stack.isEmpty() && stack.peek() == num) {
+                        int mergedNum = stack.pop() * 2;
+                        stack.push(mergedNum);
+                        stack.push(0);
                     } else {
-                        if (stack.peek() == num) {
-                            int mergedNum = stack.pop() * 2;
-                            stack.push(mergedNum);
-                            stack.push(0);
-                        } else {
-                            stack.push(num);
-                        }
+                        stack.push(num);
                     }
                 }
                 upMap[row][col] = 0;
@@ -136,16 +128,12 @@ public class Main {
             for (int col = N - 1; col >= 0; col--) {
                 int num = rightMap[row][col];
                 if (num != 0) {
-                    if (stack.isEmpty()) {
-                        stack.push(num);
+                    if (!stack.isEmpty() && stack.peek() == num) {
+                        int mergedNum = stack.pop() * 2;
+                        stack.push(mergedNum);
+                        stack.push(0);
                     } else {
-                        if (stack.peek() == num) {
-                            int mergedNum = stack.pop() * 2;
-                            stack.push(mergedNum);
-                            stack.push(0);
-                        } else {
-                            stack.push(num);
-                        }
+                        stack.push(num);
                     }
                 }
                 rightMap[row][col] = 0;
@@ -169,19 +157,14 @@ public class Main {
             for (int col = 0; col < N; col++) {
                 int num = leftMap[row][col];
                 if (num != 0) {
-                    if (stack.isEmpty()) {
-                        stack.push(num);
+                    if (!stack.isEmpty() && num == stack.peek()) {
+                        int mergedNum = stack.pop() * 2;
+                        stack.push(mergedNum);
+                        // 계산 완료되면 더 연산되면 안되니까 0으로 막자
+                        stack.push(0);
                     } else {
-                        if (num == stack.peek()) {
-                            int mergedNum = stack.pop() * 2;
-                            stack.push(mergedNum);
-                            // 계산 완료되면 더 연산되면 안되니까 0으로 막자
-                            stack.push(0);
-                        } else {
-                            stack.push(num);
-                        }
+                        stack.push(num);
                     }
-
                 }
                 leftMap[row][col] = 0;
             }
