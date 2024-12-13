@@ -4,12 +4,14 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static int M;
+    static int N, M;
     static int[] numbers;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
+        // 입력 처리
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         numbers = new int[N];
@@ -17,29 +19,25 @@ public class Main {
         for (int i = 0; i < N; i++) {
             numbers[i] = Integer.parseInt(st.nextToken());
         }
-        int cnt = 0;
-        // 길이가 1개 부터 전체 까지 조회
-        for (int len = 1; len <= N; len++) {
-            int partialSum = 0;
-            int start = 0;
-            int end = len;
-            for (int i = start; i < end; i++) {
-                partialSum += numbers[i];
+
+        // 슬라이딩 윈도우 탐색
+        int cnt = 0, start = 0, end = 0, partialSum = 0;
+
+        while (true) {
+            if (partialSum >= M) {
+                partialSum -= numbers[start++];
+            } else if (end == N) {
+                break;
+            } else {
+                partialSum += numbers[end++];
             }
-            // 슬라이딩 윈도우
-            while (true) {
-                if (partialSum == M) {
-                    cnt++;
-                }
 
-                if (end >= N) break;
-
-                partialSum -= numbers[start];
-                start++;
-                partialSum += numbers[end];
-                end++;
+            if (partialSum == M) {
+                cnt++;
             }
         }
-        System.out.print(cnt);
+
+        // 결과 출력
+        System.out.println(cnt);
     }
 }
