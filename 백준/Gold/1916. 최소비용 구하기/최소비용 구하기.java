@@ -16,7 +16,7 @@ public class Main {
             return cost;
         }
     }
-    static int[] dijkstra;
+
     static List<List<City>> cities;
     static final int INF = Integer.MAX_VALUE;
     public static void main(String[] args) throws IOException {
@@ -24,13 +24,12 @@ public class Main {
         StringTokenizer st;
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
-        dijkstra = new int[N + 1];
-        cities = new ArrayList<>();
+        int[] dijkstra = new int[N + 1];
+        cities = new ArrayList<List<City>>();
         for (int i = 0; i <= N; i++) {
-            dijkstra[i] = INF;
             cities.add(new ArrayList<>());
+            dijkstra[i] = INF;
         }
-        PriorityQueue<City> pq = new PriorityQueue<>(Comparator.comparingInt(City::getCost));
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int start = Integer.parseInt(st.nextToken());
@@ -39,23 +38,24 @@ public class Main {
             cities.get(start).add(new City(end, cost));
         }
         st = new StringTokenizer(br.readLine());
-        int start = Integer.parseInt(st.nextToken());
-        int end = Integer.parseInt(st.nextToken());
-        pq.offer(new City(start, 0));
+        int startV = Integer.parseInt(st.nextToken());
+        int endV = Integer.parseInt(st.nextToken());
+        PriorityQueue<City> pq = new PriorityQueue<City>(Comparator.comparingInt(City::getCost));
+        pq.offer(new City(startV, 0));
         while (!pq.isEmpty()) {
-            City cur = pq.poll();
-            int v = cur.vertex;
-            int cost = cur.cost;
-            
-            if (dijkstra[v] < cost) continue; 
-            for (City next : cities.get(v)) {
-                int newCost = next.getCost() + cost;
-                if (dijkstra[next.vertex] > newCost) {
+            City curr = pq.poll();
+            int curV = curr.vertex;
+            int curCost = curr.cost;
+
+            if (dijkstra[curV] < curCost) continue;
+            for (City next : cities.get(curV)) {
+                int newCost = curCost + next.cost;
+                if (newCost < dijkstra[next.vertex]) {
                     dijkstra[next.vertex] = newCost;
                     pq.offer(new City(next.vertex, newCost));
                 }
             }
         }
-        System.out.println(dijkstra[end]);
+        System.out.print(dijkstra[endV]);
     }
 }
