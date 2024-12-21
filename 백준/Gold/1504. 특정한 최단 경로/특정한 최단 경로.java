@@ -46,19 +46,22 @@ import java.io.BufferedReader;
             int V2 = Integer.parseInt(st.nextToken());
             // 1 -> N으로 최단 거리로 이동
             // V1과 V2은 반드시 거쳐가야 함
-            long[] dijkstraOne = dijkstraCalculate(1);
-            long[] dijkstraV1 = dijkstraCalculate(V1);
-            long[] dijkstraV2 = dijkstraCalculate(V2);
-            // 1. 1 -> V1 -> V2 -> N
-            long sumV1V2 = dijkstraOne[V1] + dijkstraV1[V2] + dijkstraV2[N];
-            // 2. 1 -> V2 -> V1 -> N
-            long sumV2V1 = dijkstraOne[V2] + dijkstraV2[V1] + dijkstraV1[N];
-            long minSum = Math.min(sumV1V2, sumV2V1);
-            System.out.println(minSum >= INF ? -1 : minSum);
+            int[] dijkstraOne = dijkstraCalculate(1);
+            int[] dijkstraV1 = dijkstraCalculate(V1);
+            int[] dijkstraV2 = dijkstraCalculate(V2);
+
+            if ((dijkstraOne[V1] == INF || dijkstraV1[V2] == INF || dijkstraV2[N] == INF)
+                    && (dijkstraOne[V2] == INF || dijkstraV2[V1] == INF || dijkstraV1[N] == INF)) {
+                System.out.print(-1);
+            } else {
+                int sumV1V2 = dijkstraOne[V1] + dijkstraV1[V2] + dijkstraV2[N];
+                int sumV2V1 = dijkstraOne[V2] + dijkstraV2[V1] + dijkstraV1[N];
+                System.out.print(Math.min(sumV1V2, sumV2V1));
+            }
         }
 
-        static long[] dijkstraCalculate(int V) {
-            long[] dijkstra = new long[N + 1];
+        static int[] dijkstraCalculate(int V) {
+            int[] dijkstra = new int[N + 1];
             Arrays.fill(dijkstra, INF);
             dijkstra[V] = 0;
 
