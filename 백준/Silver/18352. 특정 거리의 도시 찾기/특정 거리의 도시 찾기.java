@@ -20,7 +20,7 @@ public class Main {
 
     static List<List<City>> graph;
     static final int INF = Integer.MAX_VALUE;
-
+    static StringBuilder sb;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -40,26 +40,12 @@ public class Main {
             int end = Integer.parseInt(st.nextToken());
             graph.get(start).add(new City(end, 1));
         }
-
-        int[] distances = dijkstra(N, X);
-        boolean found = false;
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= N; i++) {
-            if (distances[i] == K) {
-                sb.append(i).append('\n');
-                found = true;
-            }
-        }
-
-        if (!found) {
-            System.out.println(-1);
-        } else {
-            System.out.print(sb);
-        }
+        sb = new StringBuilder();
+        dijkstra(N, X, K);
+        System.out.print(sb.length() < 2 ? -1 : sb);
     }
 
-    static int[] dijkstra(int n, int start) {
+    static void dijkstra(int n, int start, int targetDistance) {
         int[] dist = new int[n + 1];
         Arrays.fill(dist, INF);
         dist[start] = 0;
@@ -84,7 +70,10 @@ public class Main {
                 }
             }
         }
-
-        return dist;
+        for (int i = 1; i <= n; i++) {
+            if (dist[i] == targetDistance) {
+                sb.append(i).append('\n');
+            }
+        }
     }
 }
