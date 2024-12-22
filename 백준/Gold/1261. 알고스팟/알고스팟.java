@@ -1,24 +1,22 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int N;
-    static int M;
+    static int N, M;
     static char[][] maps;
     static int[][] dijkstra;
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, -1, 0, 1};
     static final int INF = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         M = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
+
         maps = new char[N][M];
         dijkstra = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -29,30 +27,37 @@ public class Main {
             }
         }
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
-        pq.offer(new int[] {0, 0, 0});
+        System.out.println(zeroOneBFS());
+    }
+
+    static int zeroOneBFS() {
+        Deque<int[]> deque = new ArrayDeque<>();
+        deque.offer(new int[]{0, 0});
         dijkstra[0][0] = 0;
 
-        while (!pq.isEmpty()) {
-            int[] cur = pq.poll();
-            int x = cur[0], y = cur[1], cnt = cur[2];
-            if (dijkstra[x][y] < cnt) continue;
+        while (!deque.isEmpty()) {
+            int[] cur = deque.poll();
+            int x = cur[0], y = cur[1];
 
             for (int i = 0; i < 4; i++) {
                 int nx = x + dx[i], ny = y + dy[i];
+
                 if (nx >= 0 && nx < N && ny >= 0 && ny < M) {
-                    int nextCnt = cnt;
-                    if (maps[nx][ny] == '1') {
-                        nextCnt = cnt + 1;
-                    }
-                    if (dijkstra[nx][ny] > nextCnt) {
-                        dijkstra[nx][ny] = nextCnt;
-                        pq.offer(new int[] {nx, ny, nextCnt});
+                    int nextCost = dijkstra[x][y] + (maps[nx][ny] == '1' ? 1 : 0);
+
+                    if (nextCost < dijkstra[nx][ny]) {
+                        dijkstra[nx][ny] = nextCost;
+
+                        if (maps[nx][ny] == '1') {
+                            deque.offerLast(new int[]{nx, ny}); // 벽을 부수는 경우 뒤쪽에 삽입
+                        } else {
+                            deque.offerFirst(new int[]{nx, ny}); // 빈 방인 경우 앞쪽에 삽입
+                        }
                     }
                 }
             }
         }
-        System.out.println(dijkstra[N-1][M-1]);
 
+        return dijkstra[N - 1][M - 1];
     }
 }
