@@ -17,33 +17,49 @@ public class Main {
 
         visited = new boolean[10]; // 숫자 방문 여부
 
-        dfs("", 0); // 순열 생성 시작
+        // 최소값 탐색
+        findMin(0, "");
+
+        // 최대값 탐색
+        visited = new boolean[10]; // 방문 초기화
+        findMax(0, "");
 
         System.out.println(maxNum);
         System.out.println(minNum);
     }
 
-    static void dfs(String num, int depth) {
-        if (depth == K + 1) { // K+1 자리 숫자를 완성
-            if (minNum.isEmpty() || num.compareTo(minNum) < 0) {
-                minNum = num;
-            }
-            if (maxNum.isEmpty() || num.compareTo(maxNum) > 0) {
-                maxNum = num;
-            }
-            return;
+    // 최소값 탐색
+    static boolean findMin(int depth, String num) {
+        if (depth == K + 1) {
+            minNum = num;
+            return true; // 최소값을 찾았으면 탐색 종료
         }
 
         for (int i = 0; i <= 9; i++) {
-            if (!visited[i]) {
-                // 이전 숫자와 부등호 조건 확인
-                if (depth == 0 || isValid(num.charAt(depth - 1) - '0', i, operators[depth - 1])) {
-                    visited[i] = true;
-                    dfs(num + i, depth + 1);
-                    visited[i] = false;
-                }
+            if (!visited[i] && (depth == 0 || isValid(num.charAt(depth - 1) - '0', i, operators[depth - 1]))) {
+                visited[i] = true;
+                if (findMin(depth + 1, num + i)) return true; // 최소값을 찾았으면 더 탐색하지 않음
+                visited[i] = false;
             }
         }
+        return false;
+    }
+
+    // 최대값 탐색
+    static boolean findMax(int depth, String num) {
+        if (depth == K + 1) {
+            maxNum = num;
+            return true; // 최대값을 찾았으면 탐색 종료
+        }
+
+        for (int i = 9; i >= 0; i--) {
+            if (!visited[i] && (depth == 0 || isValid(num.charAt(depth - 1) - '0', i, operators[depth - 1]))) {
+                visited[i] = true;
+                if (findMax(depth + 1, num + i)) return true; // 최대값을 찾았으면 더 탐색하지 않음
+                visited[i] = false;
+            }
+        }
+        return false;
     }
 
     static boolean isValid(int prev, int curr, String operator) {
