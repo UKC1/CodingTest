@@ -6,7 +6,6 @@ import java.util.*;
 public class Main {
     static List<List<int[]>> maps;
     static int[] items;
-    static final int INF = Integer.MAX_VALUE;
     static int N, M;
 
     public static void main(String[] args) throws IOException {
@@ -38,47 +37,43 @@ public class Main {
 
         int maxItems = 0;
         for (int start = 1; start <= N; start++) {
-            int[] dist = dijkstra(start);
-            int totalItems = 0;
-
-            for (int i = 1; i <= N; i++) {
-                if (dist[i] <= M) { // 거리 조건 확인
-                    totalItems += items[i];
-                }
-            }
-
-            maxItems = Math.max(maxItems, totalItems);
+            maxItems = Math.max(maxItems, bfs(start));
         }
 
         System.out.println(maxItems);
     }
 
-    static int[] dijkstra(int start) {
+    static int bfs(int start) {
         int[] dist = new int[N + 1];
-        Arrays.fill(dist, INF);
+        Arrays.fill(dist, Integer.MAX_VALUE);
         dist[start] = 0;
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
-        pq.offer(new int[]{start, 0});
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{start, 0});
 
-        while (!pq.isEmpty()) {
-            int[] cur = pq.poll();
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
             int currentV = cur[0];
             int currentLen = cur[1];
-
-            if (dist[currentV] < currentLen) continue;
 
             for (int[] next : maps.get(currentV)) {
                 int nextV = next[0];
                 int nextLen = currentLen + next[1];
 
-                if (nextLen < dist[nextV]) {
+                if (nextLen <= M && nextLen < dist[nextV]) {
                     dist[nextV] = nextLen;
-                    pq.offer(new int[]{nextV, nextLen});
+                    queue.offer(new int[]{nextV, nextLen});
                 }
             }
         }
 
-        return dist;
+        // 거리 M 이하인 노드의 아이템 합산
+        int totalItems = 0;
+        for (int i = 1; i <= N; i++) {
+            if (dist[i] <= M) {
+                totalItems += items[i];
+            }
+        }
+        return totalItems;
     }
 }
