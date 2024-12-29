@@ -4,38 +4,6 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static class Fish {
-        int x;
-        int y;
-        int dist;
-        Fish(int x, int y, int dist) {
-            this.x = x;
-            this.y = y;
-            this.dist = dist;
-        }
-
-        public int getDist() {
-            return dist;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        @Override
-        public String toString() {
-            return "Fish{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    ", dist=" + dist +
-                    '}';
-        }
-    }
-
     static int N;
     static int[][] maps;
     static int[] dx = {-1, 0, 1, 0};
@@ -94,7 +62,9 @@ public class Main {
         }
     }
     static int[] searchFish(int startX, int startY, int size) {
-        List<Fish> smallFishes = new LinkedList<>();
+        int minX = -1;
+        int minY = -1;
+        int minDist = Integer.MAX_VALUE;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (maps[i][j] != 0 && maps[i][j] < size) {
@@ -102,21 +72,19 @@ public class Main {
                     int dist = bfs(startX, startY, i, j, size);
                     // 도달할 수 있으면 리스트에 담기 크기는 필요 없음
                     if (dist != -1) {
-                        smallFishes.add(new Fish (i, j, dist));
+                        if (dist < minDist) {
+                            minDist = dist;
+                            minX = i;
+                            minY = j;
+                        }
                     }
                 }
             }
         }
-
-        if (smallFishes.isEmpty()) {
+        if (minX == -1 || minY == -1 || minDist == Integer.MAX_VALUE) {
             return null;
         }
-        // 정렬해주기 가깝고 위쪽 왼쪽 순
-        smallFishes.sort(Comparator.comparingInt(Fish::getDist)
-                .thenComparingInt(Fish::getX)
-                .thenComparingInt(Fish::getY)
-        );
-        return new int[] {smallFishes.get(0).x, smallFishes.get(0).y, smallFishes.get(0).dist};
+        return new int[] {minX, minY, minDist};
     }
 
     static int bfs(int startX, int startY, int endX, int endY, int size) {
