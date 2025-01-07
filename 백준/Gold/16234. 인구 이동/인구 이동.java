@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -34,24 +33,23 @@ public class Main {
 
         // 국경선을 공유하는 영역찾기
         int day = 0;
+        List<int[]> points = new ArrayList<>();
         while(true) {
-            boolean flag = false;
             boolean[][] visited  = new boolean[N][N];
+            boolean flag = false;
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
                     if (!visited[i][j]) {
-                        List<int[]> points = new ArrayList<>();
                         dfs(i, j, visited, points);
                         if (points.size() > 1) {
                             flag = true;
                             resetPerson(points);
                         }
+                        points.clear();
                     }
                 }
             }
-            if (!flag) {
-                break;
-            }
+            if (!flag) break;
             day++;
         }
         System.out.print(day);
