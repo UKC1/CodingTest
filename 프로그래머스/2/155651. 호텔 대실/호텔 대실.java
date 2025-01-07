@@ -1,25 +1,27 @@
 import java.util.*;
+
 class Solution {
     public int solution(String[][] book_time) {
-        int answer = 0;
-        Arrays.sort(book_time, Comparator.comparing(arr -> arr[0]));
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int[] timeline = new int[24 * 60 + 10]; // 하루 1440분 + 추가 10분
         for (String[] book : book_time) {
-            int startHour = Integer.parseInt(book[0].split(":")[0]) * 60;
-            int startMin = Integer.parseInt(book[0].split(":")[1]);
-            int startTime = startHour + startMin;
-            
-            int endHour = Integer.parseInt(book[1].split(":")[0]) * 60;
-            int endMin = Integer.parseInt(book[1].split(":")[1]);
-            int endTime = endHour + endMin + 10;
-            if (!pq.isEmpty()) {
-                if (startTime >= pq.peek()) {
-                    pq.poll();
-                }
+            int startTime = toMinutes(book[0]);
+            int endTime = toMinutes(book[1]) + 10;
+            timeline[startTime]++;
+            if (endTime < timeline.length) {
+                timeline[endTime]--;
             }
-            pq.offer(endTime);
-            
         }
-        return pq.size();
+
+        int maxRooms = 0, currentRooms = 0;
+        for (int change : timeline) {
+            currentRooms += change;
+            maxRooms = Math.max(maxRooms, currentRooms);
+        }
+        return maxRooms;
+    }
+
+    private int toMinutes(String time) {
+        String[] parts = time.split(":");
+        return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
     }
 }
