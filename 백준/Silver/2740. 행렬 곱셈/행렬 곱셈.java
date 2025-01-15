@@ -8,8 +8,9 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+
+        int N = Integer.parseInt(st.nextToken()); // 첫 번째 행렬의 행 개수
+        int M = Integer.parseInt(st.nextToken()); // 첫 번째 행렬의 열 개수 및 두 번째 행렬의 행 개수
 
         int[][] firstArr = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -20,8 +21,8 @@ public class Main {
         }
 
         st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken()); // 두 번째 행렬의 행 개수 (이미 입력된 값과 동일해야 함)
+        int K = Integer.parseInt(st.nextToken()); // 두 번째 행렬의 열 개수
         int[][] secondArr = new int[M][K];
 
         for (int i = 0; i < M; i++) {
@@ -30,25 +31,24 @@ public class Main {
                 secondArr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        
-        int[][] multipleArr = new int[firstArr.length][secondArr[0].length];
-        for (int i = 0; i < firstArr.length; i++) {
-            for (int j = 0; j < secondArr.length; j++) {
-                for (int k = 0; k < secondArr[j].length; k++) {
-                    multipleArr[i][k] += firstArr[i][j] * secondArr[j][k];
+
+        // 행렬 곱셈 수행
+        int[][] multipleArr = new int[N][K];
+        for (int i = 0; i < N; i++) { // 첫 번째 행렬의 행
+            for (int j = 0; j < K; j++) { // 두 번째 행렬의 열
+                for (int k = 0; k < M; k++) { // 곱셈 연산
+                    multipleArr[i][j] += firstArr[i][k] * secondArr[k][j];
                 }
             }
         }
 
-        for (int i = 0; i < multipleArr.length; i++) {
-            for (int j = 0; j < multipleArr[0].length; j++) {
+        // 결과 출력
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < K; j++) {
                 sb.append(multipleArr[i][j]).append(" ");
             }
             sb.append("\n");
         }
         System.out.print(sb);
-
-
-
     }
 }
