@@ -1,29 +1,34 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 public class Solution {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int T = Integer.parseInt(st.nextToken());
+        int T = Integer.parseInt(br.readLine()); 
+        StringBuilder sb = new StringBuilder();
+
         for (int test_case = 1; test_case <= T; test_case++) {
-            st = new StringTokenizer(br.readLine());
-            Set<Integer> set = new HashSet<>();
-            int N = Integer.parseInt(st.nextToken());
-            int cnt = 1;
-            while (set.size() < 10) {
-                int sliceNum = N * cnt;
-                while(sliceNum > 0) {
-                    set.add(sliceNum % 10);
-                    sliceNum /= 10;
-                }
+            int N = Integer.parseInt(br.readLine()); 
+
+            int seenDigits = 0; // 비트마스킹을 위한 변수 (0~9 등장 체크)
+            int currentNum = 0;
+            int cnt = 0;
+
+            while (seenDigits != 1023) {  // 1023(=1111111111)이면 모든 숫자가 등장한 것
                 cnt++;
+                currentNum = cnt * N;
+
+                int num = currentNum;
+                while (num > 0) {
+                    seenDigits |= (1 << (num % 10)); // 해당 숫자의 비트 ON
+                    num /= 10;
+                }
             }
-            System.out.println("#" + test_case + " " + (cnt - 1) * N);
+
+            sb.append('#').append(test_case).append(' ').append(currentNum).append('\n');
         }
+
+        System.out.print(sb);
     }
 }
