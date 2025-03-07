@@ -1,32 +1,29 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
     static int[][] checkArr;
     static int totalCnt;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         int N = Integer.parseInt(br.readLine());
         checkArr = new int[N][3];
         totalCnt = 0;
+
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            int num = Integer.parseInt(st.nextToken());
-            int strike = Integer.parseInt(st.nextToken());
-            int ball = Integer.parseInt(st.nextToken());
-            checkArr[i][0] = num;
-            checkArr[i][1] = strike;
-            checkArr[i][2] = ball;
+            checkArr[i][0] = Integer.parseInt(st.nextToken()); // 숫자
+            checkArr[i][1] = Integer.parseInt(st.nextToken()); // 스트라이크
+            checkArr[i][2] = Integer.parseInt(st.nextToken()); // 볼
         }
 
-        permutation(new ArrayList<>(), 0);
+        permutation(new int[3], new boolean[10], 0);
         System.out.println(totalCnt);
     }
 
-    static void permutation(List<Integer> list, int idx) {
+    static void permutation(int[] list, boolean[] used, int idx) {
         if (idx == 3) {
             if (isAnswer(list)) {
                 totalCnt++;
@@ -35,43 +32,38 @@ public class Main {
         }
 
         for (int i = 1; i <= 9; i++) {
-            if (!list.contains(i)) {
-                list.add(i);
-                permutation(list, idx + 1);
-                list.remove(list.size() - 1);
+            if (!used[i]) {
+                used[i] = true;
+                list[idx] = i;
+                permutation(list, used, idx + 1);
+                used[i] = false;
             }
         }
     }
 
-    static boolean isAnswer(List<Integer> list) {
+    static boolean isAnswer(int[] list) {
         for (int[] check : checkArr) {
             int num = check[0];
-            int strikeCheck = check[1];
-            int ballCheck = check[2];
+            int strikeExpected = check[1];
+            int ballExpected = check[2];
 
-            // strike cnt
-            // ball cnt
-            int strikeCurrent = 0;
-            int ballCurrent = 0;
-            int idx = 2;
-            while (num > 0) {
-                int r = num % 10;
-                if (r == list.get(idx)) {
-                    strikeCurrent++;
-                } else {
-                    if (list.contains(r)) {
-                        ballCurrent++;
-                    }
+            int strikeCount = 0;
+            int ballCount = 0;
+
+            int[] numArr = { num / 100, (num / 10) % 10, num % 10 };
+
+            for (int i = 0; i < 3; i++) {
+                if (numArr[i] == list[i]) {
+                    strikeCount++;
+                } else if (list[0] == numArr[i] || list[1] == numArr[i] || list[2] == numArr[i]) {
+                    ballCount++;
                 }
-                num /= 10;
-                idx--;
             }
 
-            if (strikeCurrent != strikeCheck || ballCurrent != ballCheck) {
+            if (strikeCount != strikeExpected || ballCount != ballExpected) {
                 return false;
             }
         }
         return true;
     }
 }
-
