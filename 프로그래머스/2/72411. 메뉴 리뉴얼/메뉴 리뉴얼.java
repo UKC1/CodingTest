@@ -1,8 +1,10 @@
 import java.util.*;
+
 class Solution {
-    List<Map<Set<Character>, Integer>> check;
+    Map<Integer, Map<String, Integer>> check;
     int[] cnt;
-    class Word {
+    
+    class Word implements Comparable<Word> {
         String word;
         int cnt;
         
@@ -11,97 +13,71 @@ class Solution {
             this.cnt = cnt;
         }
         
-        String getWord() {
-            return this.word;
-        }
-        
-        int getCnt() {
-            return this.cnt;
-        }
-        
         @Override
-        public String toString() {
-            return this.word + " : " + this.cnt;
+        public int compareTo(Word o) {
+            return this.word.compareTo(o.word); // 사전순 정렬
         }
     }
+    
     public String[] solution(String[] orders, int[] course) {
-        check = new ArrayList<>();
-        for (int i = 0; i <= 10; i++) {
-            check.add(new HashMap<>());
-        }
-       
+        check = new HashMap<>();
         cnt = new int[26];
-        List<Word> list = new ArrayList<>();
-        for (int i = 0; i < orders.length; i++) {
-            char[] orderArr = orders[i].toCharArray();
-            int n = orderArr.length;
-            for (int j = 0; j < n; j++) {
-                cnt[orderArr[j] - 'A']++;
+        
+        for (String order : orders) {
+            char[] orderArr = order.toCharArray();
+            Arrays.sort(orderArr); // 정렬하여 사전순 조합 생성
+            
+            for (char c : orderArr) {
+                cnt[c - 'A']++;
             }
             
             for (int r : course) {
                 if (r > orderArr.length) continue;
-                combination(orderArr, n, r, new ArrayList<>(), 0, 0);
+                combination(orderArr, r, new StringBuilder(), 0);
             }
         }
         
-        List<Word> tmp = new ArrayList<>();
+        PriorityQueue<Word> pq = new PriorityQueue<>();
+        
         for (int r : course) {
-            // 최대 빈도수 찾기
-            int maxCnt = 0;
-            for (Set<Character> comb : check.get(r).keySet()) {
-                int courseCnt = check.get(r).get(comb);
-                if (isValid(comb) && courseCnt > 1) {
-                    if (courseCnt > maxCnt) {
+            if (!check.containsKey(r)) continue;
+            
+            int maxCnt = 2;
+            List<Word> tmp = new ArrayList<>();
+            
+            for (Map.Entry<String, Integer> entry : check.get(r).entrySet()) {
+                int count = entry.getValue();
+                if (count >= maxCnt) {
+                    if (count > maxCnt) {
                         tmp.clear();
-                        String combStr = convertStr(comb);
-                        tmp.add(new Word(combStr, courseCnt));
-                        maxCnt = courseCnt;
-                    } else if (courseCnt == maxCnt) {
-                        String combStr = convertStr(comb);
-                        tmp.add(new Word(combStr, courseCnt));
+                        maxCnt = count;
                     }
-                } 
+                    tmp.add(new Word(entry.getKey(), count));
+                }
             }
-            list.addAll(tmp);
-            tmp.clear();
-        }    
-        list.sort(Comparator.comparing(Word::getWord));
-        String[] answer = new String[list.size()];
-        int idx = 0;
-        for (Word word : list) {
-            answer[idx++] = word.getWord();
+            pq.addAll(tmp); // 우선순위 큐에 추가
         }
-        return answer;
-    }
-    String convertStr(Set<Character> comb) {
-        StringBuilder sb = new StringBuilder();
-        for (char c : comb) {
-            sb.append(c);
+        
+        List<String> result = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            result.add(pq.poll().word);
         }
-        return sb.toString();
+        
+        return result.toArray(new String[0]);
     }
     
-    boolean isValid(Set<Character> comb) {
-        for (char c : comb) {
-            if (cnt[c - 'A'] < 2) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    void combination(char[] orderArr, int n, int r, List<Character> currentArr, int idx, int start) {
-        if (idx == r) {
-            Set<Character> courseComb = new TreeSet<>(currentArr);
-            check.get(r).put(courseComb, check.get(r).getOrDefault(courseComb, 0) + 1);
+    void combination(char[] orderArr, int r, StringBuilder current, int start) {
+        if (current.length() == r) {
+            String comb = current.toString();
+            check.putIfAbsent(r, new HashMap<>());
+            check.get(r).put(comb, check.get(r).getOrDefault(comb, 0) + 1);
             return;
         }
         
-        for (int i = start; i < n; i++) {
-            currentArr.add(orderArr[i]);
-            combination(orderArr, n, r, currentArr, idx + 1, i + 1);
-            currentArr.remove(currentArr.size() - 1);
-        } 
+        for (int i = start; i < orderArr.length; i++) {
+            current.append(orderArr[i]);
+            combination(orderArr, r, current, i + 1);
+            current.deleteCharAt(current.length() - 1);
+        }
     }
 }
