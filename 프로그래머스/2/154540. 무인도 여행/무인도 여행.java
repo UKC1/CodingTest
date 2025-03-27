@@ -1,48 +1,47 @@
 import java.util.*;
+
 class Solution {
-    int[] dx = {-1, 0, 1, 0};
-    int[] dy = {0, -1, 0, 1};
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
     boolean[][] visited;
-    int N;
-    int M;
-    int landSum;
+    int N, M;
+
     public int[] solution(String[] maps) {
         List<Integer> list = new ArrayList<>();
         N = maps.length;
         M = maps[0].length();
         visited = new boolean[N][M];
-        for (int i = 0; i < maps.length; i++) {
-            for (int j = 0; j < maps[i].length(); j++) {
-                if (maps[i].charAt(j) != 'X' && !visited[i][j]) {
-                    visited[i][j] = true;
-                    landSum = maps[i].charAt(j) - '0';
-                    dfs(i, j, maps);
-                    list.add(landSum);
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (!visited[i][j] && maps[i].charAt(j) != 'X') {
+                    int sum = dfs(i, j, maps);
+                    list.add(sum);
                 }
             }
         }
-        int[] answer = new int[list.size()];
-        if (answer.length == 0) {
-            return new int[] {-1};
-        }
-        
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = list.get(i);
-        }
+
+        if (list.isEmpty()) return new int[] {-1};
+
+        int[] answer = list.stream().mapToInt(Integer::intValue).toArray();
         Arrays.sort(answer);
         return answer;
     }
-    
-    void dfs(int x, int y, String[] maps) {
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            
-            if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny] && maps[nx].charAt(ny) != 'X') {        
-                visited[nx][ny] = true;
-                landSum += maps[nx].charAt(ny) - '0';
-                dfs(nx, ny, maps);
+
+    int dfs(int x, int y, String[] maps) {
+        visited[x][y] = true;
+        int sum = maps[x].charAt(y) - '0';
+
+        for (int d = 0; d < 4; d++) {
+            int nx = x + dx[d];
+            int ny = y + dy[d];
+
+            if (nx >= 0 && nx < N && ny >= 0 && ny < M &&
+                !visited[nx][ny] && maps[nx].charAt(ny) != 'X') {
+                sum += dfs(nx, ny, maps);
             }
         }
+
+        return sum;
     }
 }
