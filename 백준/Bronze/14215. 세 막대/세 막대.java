@@ -7,18 +7,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int firstLen = Integer.parseInt(st.nextToken());
-        int secondLen = Integer.parseInt(st.nextToken());
-        int thirdLen = Integer.parseInt(st.nextToken());
-
-        int maxLen = Math.max(firstLen, Math.max(secondLen, thirdLen));
-        int sum = firstLen + secondLen + thirdLen;
-        if (sum - maxLen > maxLen) {
-            System.out.println(sum);
+        int a = Integer.parseInt(st.nextToken());
+        int b = Integer.parseInt(st.nextToken());
+        int c = Integer.parseInt(st.nextToken());
+        int maxLen = Math.max(a, Math.max(b, c));
+        int otherLens = a + b + c - maxLen;
+        if (otherLens > maxLen) {
+            System.out.print(otherLens + maxLen);
         } else {
-            sum = sum - maxLen;
-            sum = sum * 2 - 1;
-            System.out.println(sum);
+            System.out.print(otherLens * 2 - 1);
         }
     }
 }
