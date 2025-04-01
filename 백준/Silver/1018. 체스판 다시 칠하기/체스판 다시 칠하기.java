@@ -5,61 +5,53 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static int M;
-    static char[][] boards;
-    static int minCnt = 64;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        char[][] board = new char[N][M];
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        char[][] boards = new char[N][M];
         for (int i = 0; i < N; i++) {
-            board[i] = br.readLine().toCharArray();
+            boards[i] = br.readLine().toCharArray();
         }
 
-        char[] blackWhite = new char[8];
-        char[] whiteBlack = new char[8];
+        char[][] blackWhite = new char[8][8];
+        char[][] whiteBlack = new char[8][8];
+
+        String black = "BWBWBWBW";
+        String white = "WBWBWBWB";
         for (int i = 0; i < 8; i++) {
             if (i % 2 == 0) {
-                blackWhite[i] = 'B';
-                whiteBlack[i] = 'W';
+                blackWhite[i] = black.toCharArray();
+                whiteBlack[i] = white.toCharArray();
             } else {
-                blackWhite[i] = 'W';
-                whiteBlack[i] = 'B';
+                blackWhite[i] = white.toCharArray();
+                whiteBlack[i] = black.toCharArray();
             }
         }
 
-
-        for (int row = 0; row <= N - 8; row++) {
-            for (int col = 0; col <= M - 8; col++) {
-                int bCnt = 0;
-                int wCnt = 0;
-                for (int subRow = row; subRow < row + 8; subRow++) {
-                    for (int subCol = col; subCol < col + 8 ; subCol++) {
-                        if (subRow % 2 == 0) {
-                            if (board[subRow][subCol] != blackWhite[subCol - col]) {
-                                bCnt++;
-                            }
-
-                            if (board[subRow][subCol] != whiteBlack[subCol - col]) {
-                                wCnt++;
-                            }
-                        } else {
-                            if (board[subRow][subCol] != whiteBlack[subCol - col]) {
-                                bCnt++;
-                            }
-
-                            if (board[subRow][subCol] != blackWhite[subCol - col]) {
-                                wCnt++;
-                            }
+        int minWhiteCnt = Integer.MAX_VALUE;
+        int minBlackCnt = Integer.MAX_VALUE;
+        for (int i = 0; i <= N - 8; i++) {
+            for (int j = 0; j <= M - 8; j++) {
+                int whiteCnt = 0;
+                int blackCnt = 0;
+                for (int x = 0; x < 8; x++) {
+                    for (int y = 0; y < 8; y++) {
+                        int curX = x + i;
+                        int curY = y + j;
+                        if (boards[curX][curY] != blackWhite[x][y]) {
+                            blackCnt++;
+                        }
+                        if (boards[curX][curY] != whiteBlack[x][y]) {
+                            whiteCnt++;
                         }
                     }
                 }
-                minCnt = Math.min(minCnt, Math.min(bCnt, wCnt));
+                if (blackCnt < minBlackCnt) minBlackCnt = blackCnt;
+                if (whiteCnt < minWhiteCnt) minWhiteCnt = whiteCnt;
             }
         }
-        System.out.println(minCnt);
+        System.out.print(Math.min(minBlackCnt, minWhiteCnt));
     }
 }
