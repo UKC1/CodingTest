@@ -6,39 +6,43 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    static List<List<Integer>> graph = new ArrayList<>();
+    static List<List<Integer>> graph;
+    static boolean[] visited;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
+
+        graph = new ArrayList<>();
+        visited = new boolean[N + 1];
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
         }
+
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            graph.get(start).add(end);
-            graph.get(end).add(start);
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            graph.get(u).add(v);
+            graph.get(v).add(u);
         }
-
         int cnt = 0;
-        boolean[] visited = new boolean[N + 1];
         for (int i = 1; i <= N; i++) {
             if (!visited[i]) {
                 cnt++;
-                dfs(i, visited);
+                dfs(i);
             }
         }
         System.out.print(cnt);
+
     }
 
-    static void dfs(int start, boolean[] visited) {
-        visited[start] = true;
-        for (Integer next : graph.get(start)) {
+    static void dfs(int vertex) {
+        visited[vertex] = true;
+        for (Integer next : graph.get(vertex)) {
             if (!visited[next]) {
-                dfs(next, visited);
+                dfs(next);
             }
         }
     }
