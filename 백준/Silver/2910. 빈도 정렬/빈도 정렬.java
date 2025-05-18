@@ -1,67 +1,36 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class Sequence {
-        int num;
-        int createdAt;
-        int totalCnt;
-        Sequence(int num, int createdAt, int totalCnt) {
-            this.num = num;
-            this.createdAt = createdAt;
-            this.totalCnt = totalCnt;
-        }
-
-        public int getNum() {
-            return num;
-        }
-
-        public int getCreatedAt() {
-            return createdAt;
-        }
-
-        public int getTotalCnt() {
-            return totalCnt;
-        }
-
-        @Override
-        public String toString() {
-            return "Sequence{" +
-                    "num=" + num +
-                    ", createdAt=" + createdAt +
-                    ", totalCnt=" + totalCnt +
-                    '}';
-        }
-    }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
+
         int N = Integer.parseInt(st.nextToken());
         int C = Integer.parseInt(st.nextToken());
+
         st = new StringTokenizer(br.readLine());
-        Map<Integer, int[]> map = new HashMap<>();
+        LinkedHashMap<Integer, Integer> freq = new LinkedHashMap<>();
+
         for (int i = 0; i < N; i++) {
             int num = Integer.parseInt(st.nextToken());
-            if (map.containsKey(num)) {
-                map.get(num)[1]++;
-            } else {
-                map.put(num, new int[]{i, 1});
+            freq.put(num, freq.getOrDefault(num, 0) + 1);
+        }
+
+        // Map.Entry 리스트로 변환 후 정렬
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(freq.entrySet());
+        list.sort((a, b) -> b.getValue().compareTo(a.getValue()));  // 빈도 내림차순
+
+        // 출력
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, Integer> entry : list) {
+            int num = entry.getKey();
+            int count = entry.getValue();
+            for (int i = 0; i < count; i++) {
+                sb.append(num).append(' ');
             }
         }
 
-        List<Sequence> list = new ArrayList<>();
-        for (Integer num : map.keySet()) {
-            list.add(new Sequence(num, map.get(num)[0], map.get(num)[1]));
-        }
-        list.sort(Comparator.comparingInt(Sequence::getTotalCnt).reversed().thenComparingInt(Sequence::getCreatedAt));
-        for (Sequence s : list) {
-            for (int i = 0; i < s.totalCnt; i++) {
-                sb.append(s.num).append(' ');
-            }
-        }
         System.out.println(sb);
     }
 }
