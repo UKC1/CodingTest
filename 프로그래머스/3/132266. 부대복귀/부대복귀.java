@@ -13,7 +13,7 @@ class Solution {
             edges.get(road[1]).add(road[0]);
         }
         
-        int[] distFromD = dijkstra(n, destination, edges);
+        int[] distFromD = bfs(n, destination, edges);
         
         for (int i = 0; i < sources.length; i++) {
             answer[i] = distFromD[sources[i]] == INF ? -1 : distFromD[sources[i]];
@@ -21,25 +21,22 @@ class Solution {
         return answer;
     }
     
-    private int[] dijkstra(int n, int start, List<List<Integer>> edges) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(arr -> arr[1]));
-        pq.offer(new int[] {start, 0});
+    private int[] bfs(int n, int start, List<List<Integer>> edges) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[] {start, 0});
         int[] dist = new int[n + 1];
-        Arrays.fill(dist, INF);
+        Arrays.fill(dist, -1);
         dist[start] = 0;
         
-        while(!pq.isEmpty()) {
-            int[] curr = pq.poll();
-            int curVertex = curr[0];
-            int curCnt = curr[1];
+        while(!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int currX = curr[0];
+            int currCnt = curr[1];
             
-            if (dist[curVertex] < curCnt) continue;
-            
-            for (Integer nextVertex : edges.get(curVertex)) {
-                int nextCnt = dist[curVertex] + 1;
-                if (dist[nextVertex] > nextCnt) {
-                    dist[nextVertex] = nextCnt;
-                    pq.offer(new int[] {nextVertex, nextCnt});
+            for (Integer nextX : edges.get(currX)) {
+                if (dist[nextX] == -1) {
+                    dist[nextX] = currCnt + 1;
+                    queue.offer(new int[] {nextX, currCnt + 1});
                 }
             }
         }
