@@ -9,33 +9,33 @@ import java.util.StringTokenizer;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        int[] arr = new int[N];
-        int[] sortedArr = new int[N];
-        
         StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        // O(N) 문제
+        int[] numbers = new int[N];
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-            sortedArr[i] = arr[i];
+            numbers[i] = Integer.parseInt(st.nextToken());
         }
-
-        // 정렬
-        Arrays.sort(sortedArr);
-
-        // 좌표 압축을 위한 Map 생성
+        // 나보다 작은 애들의 개수를 구해야 됨
+        // 제일 작은애가 0등
+        int[] sortedNumbers = Arrays.copyOf(numbers, N);
+        Arrays.sort(sortedNumbers);
+        int rank = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        int cnt = 0;
-        for (int num : sortedArr) {
-            if (!map.containsKey(num)) {
-                map.put(num, cnt++);
+        map.put(sortedNumbers[0], rank);
+        for (int i = 1; i < N; i++) {
+            if (sortedNumbers[i - 1] == sortedNumbers[i]) {
+                continue;
             }
+            map.put(sortedNumbers[i], ++rank);
         }
-
-        // 결과 출력
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < N; i++) {
-            sb.append(map.get(arr[i])).append(" ");
+            sb.append(map.get(numbers[i])).append(' ');
         }
-        System.out.println(sb);
+        System.out.print(sb);
+
     }
 }
+
